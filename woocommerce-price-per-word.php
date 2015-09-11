@@ -17,7 +17,8 @@
 if (!defined('WPINC')) {
     die;
 }
-
+if (!defined('PPW_PLUGIN_URL'))
+    define('PPW_PLUGIN_URL', plugin_dir_url(__FILE__));
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-woocommerce-price-per-word-activator.php

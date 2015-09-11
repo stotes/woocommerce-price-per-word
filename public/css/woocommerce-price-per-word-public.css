@@ -1,4 +1,15 @@
-/**
- * All of the CSS for your public-facing functionality should be
- * included in this file.
- */
+#ppw_file_upload_id{ 
+    color:transparent;
+    vertical-align: middle;
+}
+.ppw_file_upload_div {
+    float: left;
+    margin-bottom: 1em;
+}
+#ppw_file_container {
+    clear: both;
+}
+#ppw_file_container .button.wc-forward {
+    float: right;
+    vertical-align: middle;
+}

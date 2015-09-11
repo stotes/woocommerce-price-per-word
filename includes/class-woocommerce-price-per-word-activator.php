@@ -12,7 +12,7 @@ class Woocommerce_Price_Per_Word_Activator {
      * @since    1.0.0
      */
     public static function activate() {
-        
+        update_option('woocommerce_cart_redirect_after_add', 'yes');
     }
 
 }

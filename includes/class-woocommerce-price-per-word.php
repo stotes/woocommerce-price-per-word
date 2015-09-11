@@ -79,6 +79,7 @@ class Woocommerce_Price_Per_Word {
          * core plugin.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woocommerce-price-per-word-loader.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woocommerce-price-per-word-string-reader.php';
 
         /**
          * The class responsible for defining internationalization functionality
@@ -130,6 +131,24 @@ class Woocommerce_Price_Per_Word {
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+        $this->loader->add_action('product_type_options', $plugin_admin, 'product_type_options_own');
+        $this->loader->add_action('woocommerce_process_product_meta_simple', $plugin_admin, 'woocommerce_process_product_meta_save');
+        $this->loader->add_action('woocommerce_process_product_meta_variable', $plugin_admin, 'woocommerce_process_product_meta_save');
+        $this->loader->add_action('woocommerce_before_add_to_cart_button', $plugin_admin, 'woocommerce_before_add_to_cart_button_own');
+        $this->loader->add_filter('woocommerce_get_price_html', $plugin_admin, 'woocommerce_get_price_html_own', 10, 1);
+        $this->loader->add_action('wp_ajax_ppw_uploads', $plugin_admin, 'ppw_file_upload_action', 10);
+        $this->loader->add_action('wp_ajax_nopriv_ppw_uploads', $plugin_admin, 'ppw_file_upload_action', 10);
+        //$this->loader->add_filter('upload_dir', $plugin_admin, 'woocommerce_price_per_word_upload_dir', 10, 1);
+        $this->loader->add_filter('upload_mimes', $plugin_admin, 'woocommerce_price_per_word_extended_mime_types', 10, 1);
+        $this->loader->add_filter('woocommerce_add_to_cart_redirect', $plugin_admin, 'woocommerce_add_to_cart_redirect_own', 10, 1);
+        $this->loader->add_action('init', $plugin_admin, 'ppw_session_start', 1);
+        $this->loader->add_action('wp_ajax_ppw_remove', $plugin_admin, 'woocommerce_price_per_word_ppw_remove', 10);
+        $this->loader->add_action('wp_ajax_nopriv_ppw_remove', $plugin_admin, 'woocommerce_price_per_word_ppw_remove', 10);
+        $this->loader->add_filter('woocommerce_add_cart_item_data', $plugin_admin, 'woocommerce_add_cart_item_data_own', 1, 2);
+        $this->loader->add_filter('woocommerce_get_cart_item_from_session', $plugin_admin, 'woocommerce_get_cart_item_from_session_own', 1, 3);
+        $this->loader->add_filter('woocommerce_checkout_cart_item_quantity', $plugin_admin, 'woocommerce_checkout_cart_item_quantity_own', 1, 3);
+        $this->loader->add_filter('woocommerce_cart_item_price', $plugin_admin, 'woocommerce_checkout_cart_item_quantity_own', 1, 3);
+        $this->loader->add_action('woocommerce_add_order_item_meta', $plugin_admin, 'woocommerce_add_order_item_meta_own',1,2);
     }
 
     /**

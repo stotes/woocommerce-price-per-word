@@ -54,6 +54,11 @@ class Woocommerce_Price_Per_Word_Admin {
      */
     public function enqueue_scripts() {
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-admin.js', array('jquery'), $this->version, false);
+        if (wp_script_is($this->plugin_name)) {
+            wp_localize_script($this->plugin_name, 'woocommerce_price_per_word_params', apply_filters('woocommerce_price_per_word_params', array(
+                'woocommerce_currency_symbol_js' => '('.get_woocommerce_currency_symbol().')'
+            )));
+        }
     }
 
     /**
@@ -83,34 +88,40 @@ class Woocommerce_Price_Per_Word_Admin {
     }
 
     public function woocommerce_before_add_to_cart_button_own() {
-        $display_or_hide_ppw_file_container = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? '' : 'style="display: none"';
-        $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? 'style="display: none"' : '';
-        ?>
-        <div class="ppw_file_upload_div" <?php echo $display_or_hide_ppw_file_upload_div; ?>>
-            <label for="file_upload">Select your file(s)</label><input type="file" name="ppw_file_upload" value="Add File" id="ppw_file_upload_id">
-        </div>
-        <div id="ppw_loader" style="display: none"><img src="<?php echo PPW_PLUGIN_URL . 'public/image/ajax-loader.gif'; ?>" alt="Loading"/></div>
-        <button style="display: none" type="submit" id="upload-button">Upload</button>
-        <div id="ppw_file_container" class="woocommerce-message" <?php echo $display_or_hide_ppw_file_container; ?>>
-            <?php
-            if (session_id()) {
-                if (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) {
-                    echo '<input type="hidden" name="file_uploaded" value="url">';
-                    echo '<a id="ppw_remove_file" data_file="' . $_SESSION['attach_id'] . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
-                }
-            }
+        if ($this->is_enable_price_per_word()) {
+            $display_or_hide_ppw_file_container = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? '' : 'style="display: none"';
+            $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? 'style="display: none"' : '';
             ?>
-        </div>
-        <?php
+            <div class="ppw_file_upload_div" <?php echo $display_or_hide_ppw_file_upload_div; ?>>
+                <label for="file_upload">Select your file(s)</label><input type="file" name="ppw_file_upload" value="Add File" id="ppw_file_upload_id">
+            </div>
+            <div id="ppw_loader" style="display: none"><img src="<?php echo PPW_PLUGIN_URL . 'public/image/ajax-loader.gif'; ?>" alt="Loading"/></div>
+            <button style="display: none" type="submit" id="upload-button">Upload</button>
+            <div id="ppw_file_container" class="woocommerce-message" <?php echo $display_or_hide_ppw_file_container; ?>>
+                <?php
+                if (session_id()) {
+                    if (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) {
+                        echo '<input type="hidden" name="file_uploaded" value="url">';
+                        echo '<a id="ppw_remove_file" data_file="' . $_SESSION['attach_id'] . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
+                    }
+                }
+                ?>
+            </div>
+            <?php
+        }
     }
 
     public function woocommerce_get_price_html_own($price) {
-        return 'Price Per Word: ' . $price;
+        if ($this->is_enable_price_per_word()) {
+            return 'Price Per Word: ' . $price;
+        } else {
+            return $price;
+        }
     }
 
     public function ppw_file_upload_action() {
         add_filter('upload_dir', array($this, 'woocommerce_price_per_word_upload_dir'), 10, 1);
-        $return_messge = array('total_word' => '', 'message' => 'File successfully uploaded', 'url' => '');
+        $return_messge = array('total_word' => '', 'message' => 'File successfully uploaded', 'url' => '', 'message_content' => '');
         if (isset($_POST['security']) && !empty($_POST['security'])) {
             if (wp_verify_nonce($_POST['security'], 'woocommerce_price_per_word_params_nonce')) {
                 if (!function_exists('wp_handle_upload')) {
@@ -129,24 +140,30 @@ class Woocommerce_Price_Per_Word_Admin {
                         if ($return_string != 'File Not exists' && $return_string != 'Invalid File Type') {
                             $total_words = count(str_word_count($return_string, 1));
                             $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words);
+                            $attachment_page = wp_get_attachment_url($attach_id);
                             $return_messge['total_word'] = $total_words;
                             $_SESSION['attach_id'] = $attach_id;
                             $_SESSION['total_words'] = $total_words;
-                            $_SESSION['file_url'] = $movefile['url'];
+                            $_SESSION['file_url'] = $attachment_page;
                             $_SESSION['file_name'] = $fileArray['basename'];
-                            $return_messge['message'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
+                            $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                             echo json_encode($return_messge, true);
                         }
                     } elseif ($file_ext == 'txt') {
                         $file_content = file_get_contents($movefile['file']);
                         $total_words = count(str_word_count($file_content, 1));
                         $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words);
+                        $attachment_page = wp_get_attachment_url($attach_id);
                         $return_messge['total_word'] = $total_words;
                         $_SESSION['attach_id'] = $attach_id;
                         $_SESSION['total_words'] = $total_words;
-                        $_SESSION['file_url'] = $movefile['url'];
+                        $_SESSION['file_url'] = $attachment_page;
                         $_SESSION['file_name'] = $fileArray['basename'];
-                        $return_messge['message'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
+                        $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
+                        echo json_encode($return_messge, true);
+                    } else {
+                        $return_messge = array('total_word' => '', 'message' => 'The file upload failed, Please choose a valid file extension and try again.', 'url' => '');
+                        $return_messge['message_content'] = 'The file upload failed, Please choose a valid file extension and try again.';
                         echo json_encode($return_messge, true);
                     }
                     exit();
@@ -155,7 +172,15 @@ class Woocommerce_Price_Per_Word_Admin {
                     echo json_encode($return_messge, true);
                     exit();
                 }
+            } else {
+                $return_messge = array('total_word' => '', 'message' => 'security problem, wordpress nonce is not verified', 'url' => '');
+                echo json_encode($return_messge, true);
+                exit();
             }
+        } else {
+            $return_messge = array('total_word' => '', 'message' => 'security problem, wordpress nonce is not verified', 'url' => '');
+            echo json_encode($return_messge, true);
+            exit();
         }
     }
 
@@ -207,7 +232,11 @@ class Woocommerce_Price_Per_Word_Admin {
             if (wp_verify_nonce($_POST['security'], 'woocommerce_price_per_word_params_nonce')) {
                 if (isset($_POST['value']) && !empty($_POST['value'])) {
                     wp_delete_attachment($_POST['value']);
+                    unset($_SESSION['attachment_anchor_tag_url']);
                     unset($_SESSION['attach_id']);
+                    unset($_SESSION['total_words']);
+                    unset($_SESSION['file_url']);
+                    unset($_SESSION['file_name']);
                     echo json_encode($return_messge, true);
                     exit();
                 }
@@ -234,8 +263,11 @@ class Woocommerce_Price_Per_Word_Admin {
             $custome_cart_data['file_name'] = $_SESSION['file_name'];
             unset($_SESSION['file_name']);
         }
+        if (isset($_SESSION['attachment_anchor_tag_url']) && !empty($_SESSION['attachment_anchor_tag_url'])) {
+            $custome_cart_data['attachment_anchor_tag_url'] = $_SESSION['attachment_anchor_tag_url'];
+            unset($_SESSION['attachment_anchor_tag_url']);
+        }
         $ppw_custome_cart_data_value = array('ppw_custome_cart_data' => $custome_cart_data);
-
         if (empty($custome_cart_data)) {
             return $cart_item_data;
         } else {
@@ -280,10 +312,26 @@ class Woocommerce_Price_Per_Word_Admin {
         $user_custom_values = $values['ppw_custome_cart_data'];
         if (!empty($user_custom_values)) {
             foreach ($user_custom_values as $key => $value) {
-                if ($key != "attach_id") {
+                if ($key != "attach_id" && $key != "file_name") {
+                    $key = ucwords(str_replace("_", " ", $key));
                     wc_add_order_item_meta($item_id, $key, $value);
                 }
             }
+            wc_add_order_item_meta($item_id, 'ppw_custome_cart_data', $user_custom_values);
+        }
+    }
+
+    public function is_enable_price_per_word() {
+        global $product;
+        if (isset($product->id) && !empty($product->id)) {
+            $enable = get_post_meta($product->id, '_price_per_word', true);
+            if (!empty($enable) && $enable == "yes") {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 

@@ -47,14 +47,24 @@ jQuery(function ($) {
                 success: function (data) {
                     var obj = $.parseJSON(data);
                     $("#ppw_loader").hide();
-                    var input_two = $("<input>").attr("type", "hidden").attr("name", "file_uploaded").val(obj.url);
-                    $(".variations_form").append($(input_two));
-                    $(".ppw_file_upload_div").hide();
-                    $(".single_variation_wrap").show();
-                    $("#ppw_file_container").html(obj.message);
-                    $("#ppw_file_container").show();
-                    $(".woocommerce .quantity input[name='quantity']").val(obj.total_word);
-                    $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
+                    if (obj.message == "File successfully uploaded") {
+                        var input_two = $("<input>").attr("type", "hidden").attr("name", "file_uploaded").val(obj.url);
+                        $(".variations_form").append($(input_two));
+                        $(".ppw_file_upload_div").hide();
+                        $(".single_variation_wrap").show();
+                        if($( "#ppw_file_container" ).hasClass( "woocommerce-error" )) {
+                            $('#ppw_file_container').removeClass('woocommerce-error');
+                        }
+                        $("#ppw_file_container").html(obj.message_content);
+                        $("#ppw_file_container").show();
+                        $(".woocommerce .quantity input[name='quantity']").val(obj.total_word);
+                        $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
+                    } else {
+                        $("#ppw_file_container").addClass("woocommerce-error");
+                        $("#ppw_file_container").html(obj.message_content);
+                        $("#ppw_file_container").show();
+                    }
+
                 },
                 cache: false,
                 contentType: false,

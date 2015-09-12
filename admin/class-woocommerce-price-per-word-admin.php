@@ -203,6 +203,7 @@ class Woocommerce_Price_Per_Word_Admin {
     }
 
     public function ppw_upload_file_to_media($filename, $count_word) {
+        $parent_post_id = '';
         $filetype = wp_check_filetype(basename($filename), null);
         $wp_upload_dir = wp_upload_dir();
         $attachment = array(

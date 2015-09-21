@@ -114,7 +114,7 @@ class Woocommerce_Price_Per_Word_Admin {
                 $user_guide_message = 'Please upload your .doc, .docx, .pdf or .txt to get a price.';
             }
             ?>
-            <span><?php echo $user_guide_message; ?></span>
+            <span id="user_guide_message" <?php echo $display_or_hide_ppw_file_upload_div; ?>><?php echo $user_guide_message; ?></span>
             <div class="ppw_file_upload_div" <?php echo $display_or_hide_ppw_file_upload_div; ?>>
                 <label for="file_upload">Select your file(s)</label><input type="file" name="ppw_file_upload" value="Add File" id="ppw_file_upload_id">
             </div>

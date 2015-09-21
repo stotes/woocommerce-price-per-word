@@ -51,6 +51,7 @@ jQuery(function ($) {
                         var input_two = $("<input>").attr("type", "hidden").attr("name", "file_uploaded").val(obj.url);
                         $(".variations_form").append($(input_two));
                         $(".ppw_file_upload_div").hide();
+                        $("#user_guide_message").hide();
                         $(".single_variation_wrap").show();
                         if($( "#ppw_file_container" ).hasClass( "woocommerce-error" )) {
                             $('#ppw_file_container').removeClass('woocommerce-error');
@@ -86,6 +87,7 @@ jQuery(function ($) {
                     $("#ppw_file_container").html('');
                     $("#ppw_file_container").hide();
                     $(".ppw_file_upload_div").show();
+                     $("#user_guide_message").show();
                     $(".single_variation_wrap").hide();
                 }
             });

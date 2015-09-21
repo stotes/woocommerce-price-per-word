@@ -3,7 +3,7 @@
     vertical-align: middle;
 }
 .ppw_file_upload_div {
-    float: left;
+    clear: both;
     margin-bottom: 1em;
 }
 #ppw_file_container {

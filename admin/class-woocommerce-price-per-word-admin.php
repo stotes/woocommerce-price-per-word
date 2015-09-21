@@ -288,7 +288,7 @@ class Woocommerce_Price_Per_Word_Admin {
     }
 
     public function woocommerce_checkout_cart_item_quantity_own($product_name, $values, $cart_item_key) {
-        if (count($values['ppw_custome_cart_data']) > 0) {
+        if (isset($values['ppw_custome_cart_data']) && count($values['ppw_custome_cart_data']) > 0) {
             $return_string = $product_name . "</a>";
 
             if (isset($values['ppw_custome_cart_data']['file_name']) && !empty($values['ppw_custome_cart_data']['file_name'])) {

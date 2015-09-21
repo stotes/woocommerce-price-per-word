@@ -119,8 +119,11 @@ class Woocommerce_Price_Per_Word_String_Reader {
 
             @set_time_limit();
             if ($this->showprogress) {
-                flush();
-                ob_flush();
+                if (ob_get_level()) { 
+                    ob_flush();
+                    flush();
+                }
+                
             }
 
             if (preg_match("#stream[\n|\r](.*)endstream[\n|\r]#ismU", $currentObject . "endstream\r", $stream)) {

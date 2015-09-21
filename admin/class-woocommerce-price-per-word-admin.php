@@ -36,6 +36,7 @@ class Woocommerce_Price_Per_Word_Admin {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+        $this->load_dependencies();
     }
 
     /**
@@ -56,9 +57,26 @@ class Woocommerce_Price_Per_Word_Admin {
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-admin.js', array('jquery'), $this->version, false);
         if (wp_script_is($this->plugin_name)) {
             wp_localize_script($this->plugin_name, 'woocommerce_price_per_word_params', apply_filters('woocommerce_price_per_word_params', array(
-                'woocommerce_currency_symbol_js' => '('.get_woocommerce_currency_symbol().')'
+                'woocommerce_currency_symbol_js' => '(' . get_woocommerce_currency_symbol() . ')'
             )));
         }
+    }
+
+    private function load_dependencies() {
+        /**
+         * The class responsible for defining all actions that occur in the Dashboard
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woocommerce-price-per-word-admin-display.php';
+
+        /**
+         * The class responsible for defining function for display Html element
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woocommerce-price-per-word-html-output.php';
+        
+        /**
+         * The class responsible for defining function for display general setting tab
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woocommerce-price-per-word-admin-setting.php';
     }
 
     /**
@@ -91,7 +109,12 @@ class Woocommerce_Price_Per_Word_Admin {
         if ($this->is_enable_price_per_word()) {
             $display_or_hide_ppw_file_container = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? '' : 'style="display: none"';
             $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? 'style="display: none"' : '';
+            $user_guide_message = get_option('user_guide_message');
+            if( empty($user_guide_message) ) {
+                $user_guide_message = 'Please upload your .doc, .docx, .pdf or .txt to get a price.';
+            }
             ?>
+            <span><?php echo $user_guide_message; ?></span>
             <div class="ppw_file_upload_div" <?php echo $display_or_hide_ppw_file_upload_div; ?>>
                 <label for="file_upload">Select your file(s)</label><input type="file" name="ppw_file_upload" value="Add File" id="ppw_file_upload_id">
             </div>

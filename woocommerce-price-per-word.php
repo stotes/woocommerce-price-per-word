@@ -4,7 +4,7 @@
  * @wordpress-plugin
  * Plugin Name:       WooCommerce Price Per Word
  * Plugin URI:        https://www.angelleye.com/
- * Description:       Sell products using a "price per word" method based on a document the customer uploads.
+ * Description:       Allow users to upload a document to calculate a price based on the 'price-per-word' set for the product/service.
  * Version:           1.0.0
  * Author:            Angell EYE
  * Author URI:        http://www.angelleye.com/

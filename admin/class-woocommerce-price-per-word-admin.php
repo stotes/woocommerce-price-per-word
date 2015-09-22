@@ -109,12 +109,12 @@ class Woocommerce_Price_Per_Word_Admin {
         if ($this->is_enable_price_per_word()) {
             $display_or_hide_ppw_file_container = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? '' : 'style="display: none"';
             $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? 'style="display: none"' : '';
-            $user_guide_message = get_option('user_guide_message');
-            if( empty($user_guide_message) ) {
-                $user_guide_message = 'Please upload your .doc, .docx, .pdf or .txt to get a price.';
+            $aewcppw_product_page_message = get_option('aewcppw_product_page_message');
+            if( empty($aewcppw_product_page_message) ) {
+                $aewcppw_product_page_message = 'Please upload your .doc, .docx, .pdf or .txt to get a price.';
             }
             ?>
-            <span id="user_guide_message" <?php echo $display_or_hide_ppw_file_upload_div; ?>><?php echo $user_guide_message; ?></span>
+            <span id="aewcppw_product_page_message" <?php echo $display_or_hide_ppw_file_upload_div; ?>><?php echo $aewcppw_product_page_message; ?></span>
             <div class="ppw_file_upload_div" <?php echo $display_or_hide_ppw_file_upload_div; ?>>
                 <label for="file_upload">Select your file(s)</label><input type="file" name="ppw_file_upload" value="Add File" id="ppw_file_upload_id">
             </div>

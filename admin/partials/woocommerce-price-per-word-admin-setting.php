@@ -27,9 +27,9 @@ class Woocommerce_Price_Per_Word_Setting {
         
 
         $fields[] = array(
-            'title' => __('User guide message', 'woocommerce-price-per-word'),
+            'title' => __('Product Page Message', 'woocommerce-price-per-word'),
             'desc' => __('', 'woocommerce-price-per-word'),
-            'id' => 'user_guide_message',
+            'id' => 'aewcppw_product_page_message',
             'type' => 'textarea',
             'css' => 'min-width:300px;',
             'default' => 'Please upload your .doc, .docx, .pdf or .txt to get a price.'

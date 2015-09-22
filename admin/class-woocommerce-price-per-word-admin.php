@@ -99,9 +99,9 @@ class Woocommerce_Price_Per_Word_Admin {
         if (isset($_POST['_price_per_word'])) {
             if ($_POST['_price_per_word'] == "on") {
                 update_post_meta($post_id, '_price_per_word', "yes");
-            } else {
-                update_post_meta($post_id, '_price_per_word', "no");
             }
+        } else {
+            update_post_meta($post_id, '_price_per_word', "no");
         }
     }
 

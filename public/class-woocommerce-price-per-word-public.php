@@ -54,18 +54,34 @@ class Woocommerce_Price_Per_Word_Public {
      */
     public function enqueue_scripts() {
         $attach_id = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? $_SESSION['attach_id'] : '';
-        if(!empty($attach_id)) {
+        if (!empty($attach_id)) {
             $total_word = get_post_meta($attach_id, 'total_word', true);
         } else {
             $total_word = '';
         }
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-public.js', array('jquery'), $this->version, false);
-        if (wp_script_is($this->plugin_name)) {
-            wp_localize_script($this->plugin_name, 'woocommerce_price_per_word_params', apply_filters('woocommerce_price_per_word_params', array(
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'woocommerce_price_per_word_params_nonce' => wp_create_nonce("woocommerce_price_per_word_params_nonce"),
-                'total_word' => $total_word
-            )));
+        if ($this->is_enable_price_per_word_public()) {
+            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-public.js', array('jquery'), $this->version, false);
+            if (wp_script_is($this->plugin_name)) {
+                wp_localize_script($this->plugin_name, 'woocommerce_price_per_word_params', apply_filters('woocommerce_price_per_word_params', array(
+                    'ajax_url' => admin_url('admin-ajax.php'),
+                    'woocommerce_price_per_word_params_nonce' => wp_create_nonce("woocommerce_price_per_word_params_nonce"),
+                    'total_word' => $total_word
+                )));
+            }
+        }
+    }
+
+    public function is_enable_price_per_word_public() {
+        global $product;
+        if (isset($product->id) && !empty($product->id)) {
+            $enable = get_post_meta($product->id, '_price_per_word', true);
+            if (!empty($enable) && $enable == "yes") {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 

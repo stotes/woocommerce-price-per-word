@@ -22,7 +22,7 @@ class Woocommerce_Price_Per_Word_Admin_Display {
      * @access   public
      */
     public static function wppw_add_settings_menu() {
-        add_options_page('Woocommerce Price Per Word Options', 'Woocommerce Price Per Word', 'manage_options', 'woocommerce-price-per-word-option', array(__CLASS__, 'woocommerce_price_per_word_option'));
+        add_options_page('WooCommerce Price Per Word Options', 'WooCommerce Price Per Word', 'manage_options', 'woocommerce-price-per-word-option', array(__CLASS__, 'woocommerce_price_per_word_option'));
     }
 
     /**

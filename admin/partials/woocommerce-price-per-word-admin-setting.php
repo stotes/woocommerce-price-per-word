@@ -22,7 +22,7 @@ class Woocommerce_Price_Per_Word_Setting {
 
     public static function woocommerce_price_per_word_general_setting_fields() {
 
-        $fields[] = array('title' => __('Woocommerce Price Per Word Setting', 'woocommerce-price-per-word'), 'type' => 'title', 'desc' => '', 'id' => 'general_options');
+        $fields[] = array('title' => __('WooCommerce Price Per Word Setting', 'woocommerce-price-per-word'), 'type' => 'title', 'desc' => '', 'id' => 'general_options');
 
         
 

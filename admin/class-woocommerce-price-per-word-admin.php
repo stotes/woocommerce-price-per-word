@@ -99,9 +99,9 @@ class Woocommerce_Price_Per_Word_Admin {
         if (isset($_POST['_price_per_word'])) {
             if ($_POST['_price_per_word'] == "on") {
                 update_post_meta($post_id, '_price_per_word', "yes");
-            } else {
-                update_post_meta($post_id, '_price_per_word', "no");
             }
+        } else {
+            update_post_meta($post_id, '_price_per_word', "no");
         }
     }
 
@@ -167,7 +167,7 @@ class Woocommerce_Price_Per_Word_Admin {
                             $return_messge['total_word'] = $total_words;
                             $_SESSION['attach_id'] = $attach_id;
                             $_SESSION['total_words'] = $total_words;
-                            $_SESSION['file_url'] = $attachment_page;
+                            $_SESSION['file_url'] =  '<a href="' . esc_url( $attachment_page ) . '" target="_blank">' . esc_html( $fileArray['basename'] ) . '</a>'; 
                             $_SESSION['file_name'] = $fileArray['basename'];
                             $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                             echo json_encode($return_messge, true);
@@ -180,7 +180,7 @@ class Woocommerce_Price_Per_Word_Admin {
                         $return_messge['total_word'] = $total_words;
                         $_SESSION['attach_id'] = $attach_id;
                         $_SESSION['total_words'] = $total_words;
-                        $_SESSION['file_url'] = $attachment_page;
+                        $_SESSION['file_url'] = '<a href="' . esc_url( $attachment_page ) . '" target="_blank">' . esc_html( $fileArray['basename'] ) . '</a>'; 
                         $_SESSION['file_name'] = $fileArray['basename'];
                         $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                         echo json_encode($return_messge, true);

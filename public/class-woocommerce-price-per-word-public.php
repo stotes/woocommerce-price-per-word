@@ -74,16 +74,17 @@ class Woocommerce_Price_Per_Word_Public {
                 wp_localize_script($this->plugin_name, 'woocommerce_price_per_word_params', apply_filters('woocommerce_price_per_word_params', array(
                     'ajax_url' => admin_url('admin-ajax.php'),
                     'woocommerce_price_per_word_params_nonce' => wp_create_nonce("woocommerce_price_per_word_params_nonce"),
-                    'total_word' => $total_word
+                    'total_word' => $total_word,
+                    'is_product_type_variable' => $is_product_type_variable
                 )));
             }
         }
     }
 
     public function is_enable_price_per_word_public() {
-        global $product;
-        if (isset($product->id) && !empty($product->id)) {
-            $enable = get_post_meta($product->id, '_price_per_word', true);
+        global $post;
+        if (isset($post->ID) && !empty($post->ID)) {
+            $enable = get_post_meta($post->ID, '_price_per_word', true);
             if (!empty($enable) && $enable == "yes") {
                 return true;
             } else {

@@ -18,6 +18,27 @@ jQuery(function ($) {
                 }, 2);
             }
         });
+        $(document).ready(function(){
+            if (woocommerce_price_per_word_params.is_product_type_variable === 'true') {
+                var variations_select = $( ".woocommerce div.product form.cart .variations select option:selected" ).attr("value");
+                if(variations_select.length > 0) {
+                    $("#aewcppw_product_page_message").show();
+                    $(".ppw_file_upload_div").show();
+                } else {
+                   $("#aewcppw_product_page_message").hide();
+                   $(".ppw_file_upload_div").hide();
+                }
+                $('.variations select').on('change', function (e) {
+                    if (this.value.length === 0) {
+                        $("#aewcppw_product_page_message").hide();
+                       $(".ppw_file_upload_div").hide();
+                    } else {
+                       $("#aewcppw_product_page_message").show();
+                        $(".ppw_file_upload_div").show();
+                    }
+                });  
+            }
+        });
         $("input[name=ppw_file_upload]").change(function (event) {
             if (!$('input[name="file_uploaded"]').length) {
                 var input = $("<input>").attr("type", "hidden").attr("name", "submit_by_ajax").val("true");

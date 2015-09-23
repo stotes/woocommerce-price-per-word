@@ -53,8 +53,17 @@ class Woocommerce_Price_Per_Word_Public {
      * @since    1.0.0
      */
     public function enqueue_scripts() {
+        global $post;
+        $is_product_type_variable = 'false';
+        if (function_exists('get_product')) {
+            $product = get_product($post->ID);
+            if ($product->is_type('variable') && is_single()) {
+                $is_product_type_variable = 'true';
+            }
+        }
+
         $attach_id = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? $_SESSION['attach_id'] : '';
-        if(!empty($attach_id)) {
+        if (!empty($attach_id)) {
             $total_word = get_post_meta($attach_id, 'total_word', true);
         } else {
             $total_word = '';
@@ -64,7 +73,8 @@ class Woocommerce_Price_Per_Word_Public {
             wp_localize_script($this->plugin_name, 'woocommerce_price_per_word_params', apply_filters('woocommerce_price_per_word_params', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'woocommerce_price_per_word_params_nonce' => wp_create_nonce("woocommerce_price_per_word_params_nonce"),
-                'total_word' => $total_word
+                'total_word' => $total_word,
+                'is_product_type_variable' => $is_product_type_variable
             )));
         }
     }

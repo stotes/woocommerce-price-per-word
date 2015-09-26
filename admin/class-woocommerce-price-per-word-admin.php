@@ -208,9 +208,9 @@ class Woocommerce_Price_Per_Word_Admin {
     }
 
     public function woocommerce_price_per_word_upload_dir($param) {
-        $custome_dir = '/woocommerce-price-per-word';
-        $param['path'] = $param['basedir'] . $custome_dir;
-        $param['url'] = $param['basedir'] . $custome_dir;
+        $custom_dir = '/woocommerce-price-per-word';
+        $param['path'] = $param['basedir'] . $custom_dir;
+        $param['url'] = $param['basedir'] . $custom_dir;
         return $param;
     }
 
@@ -270,59 +270,59 @@ class Woocommerce_Price_Per_Word_Admin {
 
     public function woocommerce_add_cart_item_data_own($cart_item_data, $product_id) {
         global $woocommerce;
-        $custome_cart_data = array();
+        $custom_cart_data = array();
         if (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) {
-            $custome_cart_data['attach_id'] = $_SESSION['attach_id'];
+            $custom_cart_data['attach_id'] = $_SESSION['attach_id'];
             unset($_SESSION['attach_id']);
         }
         if (isset($_SESSION['total_words']) && !empty($_SESSION['total_words'])) {
-            $custome_cart_data['total_words'] = $_SESSION['total_words'];
+            $custom_cart_data['total_words'] = $_SESSION['total_words'];
             unset($_SESSION['total_words']);
         }
         if (isset($_SESSION['file_url']) && !empty($_SESSION['file_url'])) {
-            $custome_cart_data['file_url'] = $_SESSION['file_url'];
+            $custom_cart_data['file_url'] = $_SESSION['file_url'];
             unset($_SESSION['file_url']);
         }
         if (isset($_SESSION['file_name']) && !empty($_SESSION['file_name'])) {
-            $custome_cart_data['file_name'] = $_SESSION['file_name'];
+            $custom_cart_data['file_name'] = $_SESSION['file_name'];
             unset($_SESSION['file_name']);
         }
         if (isset($_SESSION['attachment_anchor_tag_url']) && !empty($_SESSION['attachment_anchor_tag_url'])) {
-            $custome_cart_data['attachment_anchor_tag_url'] = $_SESSION['attachment_anchor_tag_url'];
+            $custom_cart_data['attachment_anchor_tag_url'] = $_SESSION['attachment_anchor_tag_url'];
             unset($_SESSION['attachment_anchor_tag_url']);
         }
-        $ppw_custome_cart_data_value = array('ppw_custome_cart_data' => $custome_cart_data);
-        if (empty($custome_cart_data)) {
+        $ppw_custom_cart_data_value = array('ppw_custom_cart_data' => $custom_cart_data);
+        if (empty($custom_cart_data)) {
             return $cart_item_data;
         } else {
             if (empty($cart_item_data)) {
-                return $ppw_custome_cart_data_value;
+                return $ppw_custom_cart_data_value;
             } else {
-                return array_merge($cart_item_data, $ppw_custome_cart_data_value);
+                return array_merge($cart_item_data, $ppw_custom_cart_data_value);
             }
         }
     }
 
     public function woocommerce_get_cart_item_from_session_own($item, $values, $key) {
-        if (array_key_exists('ppw_custome_cart_data', $values)) {
-            $item['ppw_custome_cart_data'] = $values['ppw_custome_cart_data'];
+        if (array_key_exists('ppw_custom_cart_data', $values)) {
+            $item['ppw_custom_cart_data'] = $values['ppw_custom_cart_data'];
         }
         return $item;
     }
 
     public function woocommerce_checkout_cart_item_quantity_own($product_name, $values, $cart_item_key) {
-        if (isset($values['ppw_custome_cart_data']) && count($values['ppw_custome_cart_data']) > 0) {
+        if (isset($values['ppw_custom_cart_data']) && count($values['ppw_custom_cart_data']) > 0) {
             $return_string = $product_name . "</a>";
 
-            if (isset($values['ppw_custome_cart_data']['file_name']) && !empty($values['ppw_custome_cart_data']['file_name'])) {
+            if (isset($values['ppw_custom_cart_data']['file_name']) && !empty($values['ppw_custom_cart_data']['file_name'])) {
 
                 $return_string .= '<div><span><b>File Name: </b></span>';
-                $return_string .= "<span>" . $values['ppw_custome_cart_data']['file_name'] . "</span></div>";
+                $return_string .= "<span>" . $values['ppw_custom_cart_data']['file_name'] . "</span></div>";
             }
-            if (isset($values['ppw_custome_cart_data']['total_words']) && !empty($values['ppw_custome_cart_data']['total_words'])) {
+            if (isset($values['ppw_custom_cart_data']['total_words']) && !empty($values['ppw_custom_cart_data']['total_words'])) {
 
                 $return_string .= '<div><span><b>Total word: </b></span>';
-                $return_string .= "<span>" . $values['ppw_custome_cart_data']['total_words'] . "</span></div>";
+                $return_string .= "<span>" . $values['ppw_custom_cart_data']['total_words'] . "</span></div>";
             }
 
             return $return_string;
@@ -333,7 +333,7 @@ class Woocommerce_Price_Per_Word_Admin {
 
     public function woocommerce_add_order_item_meta_own($item_id, $values) {
         global $woocommerce, $wpdb;
-        $user_custom_values = $values['ppw_custome_cart_data'];
+        $user_custom_values = $values['ppw_custom_cart_data'];
         if (!empty($user_custom_values)) {
             foreach ($user_custom_values as $key => $value) {
                 if ($key != "attach_id" && $key != "file_name") {
@@ -341,7 +341,7 @@ class Woocommerce_Price_Per_Word_Admin {
                     wc_add_order_item_meta($item_id, $key, $value);
                 }
             }
-            wc_add_order_item_meta($item_id, 'ppw_custome_cart_data', $user_custom_values);
+            wc_add_order_item_meta($item_id, 'ppw_custom_cart_data', $user_custom_values);
         }
     }
 

@@ -160,7 +160,7 @@ class Woocommerce_Price_Per_Word_Admin {
                     if ($file_ext == "doc" || $file_ext == "docx" || $file_ext == "pdf") {
                         $docObj = new Woocommerce_Price_Per_Word_String_Reader($movefile['file']);
                         $return_string = $docObj->convertToText();
-                        if ($return_string != 'File Not exists' && $return_string != 'Invalid File Type') {
+                        if ($return_string != 'File Not exists' && $return_string != 'Invalid File Type' && !empty($return_string)) {
                             $total_words = count(str_word_count($return_string, 1));
                             $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words);
                             $attachment_page = wp_get_attachment_url($attach_id);
@@ -170,6 +170,10 @@ class Woocommerce_Price_Per_Word_Admin {
                             $_SESSION['file_name'] =  '<a href="' . esc_url( $attachment_page ) . '" target="_blank">' . esc_html( $fileArray['basename'] ) . '</a>'; 
                             $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                             echo json_encode($return_messge, true);
+                        } else {
+                             $return_messge = array('total_word' => '', 'message' => 'Your pdf file is secured or empty.', 'url' => '');
+                             $return_messge['message_content'] = 'The file upload failed, Please choose a valid file extension and try again.';
+                             echo json_encode($return_messge, true);
                         }
                     } elseif ($file_ext == 'txt') {
                         $file_content = file_get_contents($movefile['file']);

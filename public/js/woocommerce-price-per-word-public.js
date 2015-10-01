@@ -83,7 +83,11 @@ jQuery(function ($) {
                         $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
                     } else {
                         $("#ppw_file_container").addClass("woocommerce-error");
-                        $("#ppw_file_container").html(obj.message_content);
+                        if(typeof(obj.message) != "undefined" && obj.message !== null) {
+                            $("#ppw_file_container").html(obj.message);
+                        } else {
+                            $("#ppw_file_container").html(obj.message_content);
+                        }
                         $("#ppw_file_container").show();
                     }
 

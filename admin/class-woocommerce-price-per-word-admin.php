@@ -108,7 +108,7 @@ class Woocommerce_Price_Per_Word_Admin {
     public function woocommerce_before_add_to_cart_button_own() {
         if ($this->is_enable_price_per_word()) {
             $display_or_hide_ppw_file_container = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? '' : 'style="display: none"';
-            $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? 'style="display: none"' : '';
+            $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? 'style="display: none"' : 'a';
             $aewcppw_product_page_message = get_option('aewcppw_product_page_message');
             if( empty($aewcppw_product_page_message) ) {
                 $aewcppw_product_page_message = 'Please upload your .doc, .docx, .pdf or .txt to get a price.';
@@ -333,7 +333,7 @@ class Woocommerce_Price_Per_Word_Admin {
 
     public function woocommerce_add_order_item_meta_own($item_id, $values) {
         global $woocommerce, $wpdb;
-        $user_custom_values = $values['ppw_custom_cart_data'];
+        $user_custom_values = ( isset($values['ppw_custom_cart_data']) && !empty($values['ppw_custom_cart_data']) ) ? $values['ppw_custom_cart_data'] : '';
         if (!empty($user_custom_values)) {
             foreach ($user_custom_values as $key => $value) {
                 if ($key != "attach_id" && $key != "file_name") {

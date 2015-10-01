@@ -167,8 +167,7 @@ class Woocommerce_Price_Per_Word_Admin {
                             $return_messge['total_word'] = $total_words;
                             $_SESSION['attach_id'] = $attach_id;
                             $_SESSION['total_words'] = $total_words;
-                            $_SESSION['file_url'] =  '<a href="' . esc_url( $attachment_page ) . '" target="_blank">' . esc_html( $fileArray['basename'] ) . '</a>'; 
-                            $_SESSION['file_name'] = $fileArray['basename'];
+                            $_SESSION['file_name'] =  '<a href="' . esc_url( $attachment_page ) . '" target="_blank">' . esc_html( $fileArray['basename'] ) . '</a>'; 
                             $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                             echo json_encode($return_messge, true);
                         }
@@ -180,8 +179,7 @@ class Woocommerce_Price_Per_Word_Admin {
                         $return_messge['total_word'] = $total_words;
                         $_SESSION['attach_id'] = $attach_id;
                         $_SESSION['total_words'] = $total_words;
-                        $_SESSION['file_url'] = '<a href="' . esc_url( $attachment_page ) . '" target="_blank">' . esc_html( $fileArray['basename'] ) . '</a>'; 
-                        $_SESSION['file_name'] = $fileArray['basename'];
+                        $_SESSION['file_name'] = '<a href="' . esc_url( $attachment_page ) . '" target="_blank">' . esc_html( $fileArray['basename'] ) . '</a>'; 
                         $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                         echo json_encode($return_messge, true);
                     } else {
@@ -259,7 +257,6 @@ class Woocommerce_Price_Per_Word_Admin {
                     unset($_SESSION['attachment_anchor_tag_url']);
                     unset($_SESSION['attach_id']);
                     unset($_SESSION['total_words']);
-                    unset($_SESSION['file_url']);
                     unset($_SESSION['file_name']);
                     echo json_encode($return_messge, true);
                     exit();
@@ -278,10 +275,6 @@ class Woocommerce_Price_Per_Word_Admin {
         if (isset($_SESSION['total_words']) && !empty($_SESSION['total_words'])) {
             $custom_cart_data['total_words'] = $_SESSION['total_words'];
             unset($_SESSION['total_words']);
-        }
-        if (isset($_SESSION['file_url']) && !empty($_SESSION['file_url'])) {
-            $custom_cart_data['file_url'] = $_SESSION['file_url'];
-            unset($_SESSION['file_url']);
         }
         if (isset($_SESSION['file_name']) && !empty($_SESSION['file_name'])) {
             $custom_cart_data['file_name'] = $_SESSION['file_name'];
@@ -336,7 +329,7 @@ class Woocommerce_Price_Per_Word_Admin {
         $user_custom_values = ( isset($values['ppw_custom_cart_data']) && !empty($values['ppw_custom_cart_data']) ) ? $values['ppw_custom_cart_data'] : '';
         if (!empty($user_custom_values)) {
             foreach ($user_custom_values as $key => $value) {
-                if ($key != "attach_id" && $key != "file_name") {
+                if ($key != "attach_id") {
                     $key = ucwords(str_replace("_", " ", $key));
                     wc_add_order_item_meta($item_id, $key, $value);
                 }

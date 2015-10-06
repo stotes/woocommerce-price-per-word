@@ -355,5 +355,14 @@ class Woocommerce_Price_Per_Word_Admin {
             return false;
         }
     }
+    
+    public function woocommerce_single_product_summary_own() {
+       if ($this->is_enable_price_per_word()) {
+           global $product;
+           $total_price = 0;
+           $style = "style='display:none;'";
+           echo "<div><p class='ppw_total_price price' $style>Total Price: <span class='ppw_total_amount'>$total_price</span></p></div>";
+       } 
+    }
 
 }

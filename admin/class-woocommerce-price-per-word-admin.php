@@ -188,7 +188,6 @@ class Woocommerce_Price_Per_Word_Admin {
                         echo json_encode($return_messge, true);
                     } else {
                         $return_messge = array('total_word' => '', 'message' => 'The file upload failed, Please choose a valid file extension and try again.', 'url' => '');
-                        $return_messge['message_content'] = 'The file upload failed, Please choose a valid file extension and try again.';
                         echo json_encode($return_messge, true);
                     }
                     exit();

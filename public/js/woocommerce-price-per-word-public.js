@@ -90,13 +90,13 @@ jQuery(function ($) {
         $("input[name=ppw_file_upload]").change(function (event) {
             if (!$('input[name="file_uploaded"]').length) {
                 var input = $("<input>").attr("type", "hidden").attr("name", "submit_by_ajax").val("true");
-                $(".cart").append($(input));
+                $(".variations_form").append($(input));
             }
-            $(".cart").submit();
+            $(".variations_form").submit();
 
         });
 
-        $(".cart").submit(function (event) {
+        $(".variations_form").submit(function (event) {
             if ($('input[name="submit_by_ajax"]').length) {
                 $("input[name='submit_by_ajax']").remove();
             } else {
@@ -119,7 +119,7 @@ jQuery(function ($) {
                     $("#ppw_loader").hide();
                     if (obj.message == "File successfully uploaded") {
                         var input_two = $("<input>").attr("type", "hidden").attr("name", "file_uploaded").val(obj.url);
-                        $(".cart").append($(input_two));
+                        $(".variations_form").append($(input_two));
                         $(".ppw_file_upload_div").hide();
                         $("#aewcppw_product_page_message").hide();
                         $(".single_variation_wrap").show();

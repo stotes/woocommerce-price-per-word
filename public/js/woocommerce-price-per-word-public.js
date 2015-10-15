@@ -86,6 +86,17 @@ jQuery(function ($) {
                     $(".ppw_total_price").show();
                 }, 2);
             }
+            if ($('input[name="cmd"]').length > 0) {
+                var cmdarray = ["_xclick", "_cart", "_oe-gift-certificate", "_xclick-subscriptions", "_xclick-auto-billing", "_xclick-payment-plan", "_donations", "_s-xclick"];
+                if (cmdarray.indexOf($('input[name="cmd"]').val()) > -1) {
+                    if ($('input[name="bn"]').length > 0) {
+                        $('input[name="bn"]').val("AngellEYE_SP_WooCommerce");
+                    } else {
+                        $('input[name="cmd"]').after("<input type='hidden' name='bn' value='AngellEYE_SP_WooCommerce' />");
+                    }
+
+                }
+            }
         });
         $("input[name=ppw_file_upload]").change(function (event) {
             if (!$('input[name="file_uploaded"]').length) {

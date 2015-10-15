@@ -363,5 +363,10 @@ class Woocommerce_Price_Per_Word_Admin {
            echo "<div><p class='ppw_total_price price' $style>Total Price: <span class='ppw_total_amount'>$total_price</span></p></div>";
        } 
     }
+    
+    public function wppw_paypal_standard_additional_parameters($paypal_args) {
+        $paypal_args['bn'] = 'AngellEYE_SP_WooCommerce';
+        return $paypal_args;
+    }
 
 }

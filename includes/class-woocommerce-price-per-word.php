@@ -150,6 +150,7 @@ class Woocommerce_Price_Per_Word {
         $this->loader->add_filter('woocommerce_cart_item_price', $plugin_admin, 'woocommerce_checkout_cart_item_quantity_own', 1, 3);
         $this->loader->add_action('woocommerce_add_order_item_meta', $plugin_admin, 'woocommerce_add_order_item_meta_own',1,2);
         $this->loader->add_action('woocommerce_single_product_summary', $plugin_admin, 'woocommerce_single_product_summary_own',11);
+        $this->loader->add_filter( 'woocommerce_paypal_args', $plugin_admin ,'wppw_paypal_standard_additional_parameters', 10, 1);
     }
 
     /**

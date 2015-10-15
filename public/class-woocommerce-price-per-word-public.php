@@ -80,6 +80,7 @@ class Woocommerce_Price_Per_Word_Public {
                 )));
             }
         }
+        wp_enqueue_script($this->plugin_name .'-bn', plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-bn.js', array('jquery'), $this->version, false);
     }
 
     public function is_enable_price_per_word_public() {

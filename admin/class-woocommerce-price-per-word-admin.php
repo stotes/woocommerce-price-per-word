@@ -368,5 +368,9 @@ class Woocommerce_Price_Per_Word_Admin {
         $paypal_args['bn'] = 'AngellEYE_SP_WooCommerce';
         return $paypal_args;
     }
+    
+    public function wppw_woocommerce_missing_notice() {
+        echo '<div class="error"><p>' . sprintf(__('WooCommerce Price Per Word Plugin requires the %s to work!', 'woocommerce-price-per-word'), '<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">' . __('WooCommerce', 'woocommerce-price-per-word') . '</a>') . '</p></div>';
+    }
 
 }

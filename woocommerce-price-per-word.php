@@ -56,7 +56,7 @@ require plugin_dir_path(__FILE__) . 'includes/class-woocommerce-price-per-word.p
  * @since    1.0.0
  */
 
-add_action('plugins_loaded', 'wppw_innovations_init', 0);
+add_action('plugins_loaded', 'wppw_plugins_init', 0);
 
 function run_woocommerce_price_per_word() {
 
@@ -64,6 +64,6 @@ function run_woocommerce_price_per_word() {
     $plugin->run();
 }
 
-function wppw_innovations_init() {
+function wppw_plugins_init() {
     run_woocommerce_price_per_word();
 }

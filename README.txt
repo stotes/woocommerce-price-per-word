@@ -3,12 +3,12 @@ Contributors: angelleye
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=62B2PGEMVQEQY
 Tags: woocommerce, price per word
 Requires at least: 3.0.1
-Tested up to: 4.3
+Tested up to: 4.3.1
 Stable tag: 1.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Allow users to upload a document and get a price for your service based on the price-per-word set for the product/service.
+Dynamic pricing for WooCommerce products based on the number of words in an uploaded document.
 
 == Description ==
 
@@ -36,7 +36,7 @@ In the search field type WooCommerce Price Per Word and click Search Plugins. On
 
 == Frequently Asked Questions ==
 
-= What document types does this plugin support? =
+= What document types are supported? =
 
  * .doc
  * .docx
@@ -46,9 +46,10 @@ In the search field type WooCommerce Price Per Word and click Search Plugins. On
 == Screenshots ==
 
 1. Product page with 'price per word' displayed and the ability to upload a document.
+2. Product page after document has been uploaded.  Displays QTY / number of words and the total price based on the price per word.
+3. Document name displayed with link to document on cart page, order complete page, and admin order items details.
 
 == Changelog ==
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
+= 1.0.0 =
+* Initial stable release.

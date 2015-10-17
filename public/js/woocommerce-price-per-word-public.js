@@ -89,11 +89,14 @@ jQuery(function ($) {
             }
         });
         $("input[name=ppw_file_upload]").change(function (event) {
+            $("#ppw_loader").show();
             if (!$('input[name="file_uploaded"]').length) {
                 var input = $("<input>").attr("type", "hidden").attr("name", "submit_by_ajax").val("true");
                 $(".wppw_cart").append($(input));
             }
-            $(".wppw_cart").submit();
+            setTimeout(function () {
+                $(".wppw_cart").submit();
+            }, 1);
 
         });
 
@@ -103,7 +106,6 @@ jQuery(function ($) {
             } else {
                 return true;
             }
-            $("#ppw_loader").show();
             var formData = new FormData();
             formData.append("action", "ppw_uploads");
             var fileInputElement = document.getElementById("ppw_file_upload_id");
@@ -156,6 +158,7 @@ jQuery(function ($) {
                         }
                         $("#ppw_file_container").show();
                     }
+                    $("input[name=ppw_file_upload]").val("");
 
                 },
                 cache: false,
@@ -165,8 +168,8 @@ jQuery(function ($) {
             return false;
         });
 
-        $("#ppw_remove_file").live("click", function () {
-            $(".ppw_total_price").hide();
+        $("#ppw_remove_file").live("click", function (event) {
+            event.preventDefault();
             var data = {
                 action: 'ppw_remove',
                 security: woocommerce_price_per_word_params.woocommerce_price_per_word_params_nonce,
@@ -175,6 +178,7 @@ jQuery(function ($) {
             $.post(woocommerce_price_per_word_params.ajax_url, data, function (response) {
                 var obj = $.parseJSON(response);
                 if (obj.message == 'File successfully deleted') {
+                    $(".ppw_total_price").hide();
                     $(".woocommerce .quantity input[name='quantity']").val(0);
                     $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
                     $("input[name='file_uploaded']").remove();

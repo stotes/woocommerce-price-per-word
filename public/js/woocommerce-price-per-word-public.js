@@ -96,7 +96,7 @@ jQuery(function ($) {
             }
             setTimeout(function () {
                 $(".wppw_cart").submit();
-            }, 100 );
+            }, 1500 );
         });
 
         $(".wppw_cart").submit(function (event) {

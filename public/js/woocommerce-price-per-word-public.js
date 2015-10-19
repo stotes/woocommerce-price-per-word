@@ -147,7 +147,6 @@ jQuery(function ($) {
                         $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(2));
                         $(".ppw_total_price").show();
 
-
                     } else {
                         $("#ppw_file_container").addClass("woocommerce-error");
                         if (typeof (obj.message) != "undefined" && obj.message !== null) {
@@ -157,14 +156,12 @@ jQuery(function ($) {
                         }
                         $("#ppw_file_container").show();
                     }
-                    $("#ppw_loader").hide();
-                    //$("input[name=ppw_file_upload]").val("");
-
                 },
                 cache: false,
                 contentType: false,
                 processData: false
             });
+            $("#ppw_loader").hide();
             return false;
         });
 

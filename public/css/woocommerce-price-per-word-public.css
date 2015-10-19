@@ -13,3 +13,7 @@
     float: right;
     vertical-align: middle;
 }
+#ppw_loader {
+    height: 32px;
+    width: 32px;
+}

@@ -118,8 +118,7 @@ class Woocommerce_Price_Per_Word_Admin {
             <div class="ppw_file_upload_div" <?php echo $display_or_hide_ppw_file_upload_div; ?>>
                 <label for="file_upload">Select your file(s)</label><input type="file" name="ppw_file_upload" value="Add File" id="ppw_file_upload_id">
             </div>
-            <div id="ppw_loader" style="display: none"><img src="<?php echo PPW_PLUGIN_URL . 'public/image/ajax-loader.gif'; ?>" alt="Loading"/></div>
-            <button style="display: none" type="submit" id="upload-button">Upload</button>
+            <div id="ppw_loader" style="display: none;"><img src="<?php echo PPW_PLUGIN_URL . 'public/image/ajax-loader.gif'; ?>" alt="Loading"/></div>
             <div id="ppw_file_container" class="woocommerce-message" <?php echo $display_or_hide_ppw_file_container; ?>>
                 <?php
                 if (session_id()) {

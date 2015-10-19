@@ -100,9 +100,9 @@ jQuery(function ($) {
         });
 
         $(".wppw_cart").submit(function (event) {
-            event.preventDefault();
             if ($('input[name="submit_by_ajax"]').length) {
                 $("input[name='submit_by_ajax']").remove();
+                event.preventDefault();
             } else {
                 return true;
             }

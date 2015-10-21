@@ -52,5 +52,5 @@ In the search field type WooCommerce Price Per Word and click Search Plugins. On
 
 == Changelog ==
 
-= 1.0.0 =
+= 1.0.0 - 10.20.2015 =
 * Initial stable release.

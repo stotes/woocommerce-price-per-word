@@ -23,7 +23,7 @@ This plugin makes it easy to sell products or services based on a price-per-word
 = Get Involved =
 Developers can contribute to the source code on the [WooCommerce Price Per Word Git repository on GitHub](https://github.com/angelleye/WooCommerce-Price-Per-Word).
 
-= Automatic installation =
+= Automatic Installation =
 
 Automatic installation is the easiest option as WordPress handles the file transfers itself and you don't need to leave your web browser. To do an automatic install of WooCommerce Price Per Word, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New.
 

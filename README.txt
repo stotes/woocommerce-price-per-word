@@ -45,9 +45,10 @@ In the search field type WooCommerce Price Per Word and click Search Plugins. On
 
 == Screenshots ==
 
-1. Product page with 'price per word' displayed and the ability to upload a document.
-2. Product page after document has been uploaded.  Displays QTY / number of words and the total price based on the price per word.
-3. Document name displayed with link to document on cart page, order complete page, and admin order items details.
+1. Product edit screen in admin panel where you can enable Price Per Word.
+2. Product page with 'price per word' displayed and the ability to upload a document.
+3. Product page after document has been uploaded.  Displays QTY / number of words and the total price based on the price per word.
+4. Document name displayed with link to document on cart page, order complete page, and admin order items details.
 
 == Changelog ==
 

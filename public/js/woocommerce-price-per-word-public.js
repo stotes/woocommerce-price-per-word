@@ -1,7 +1,7 @@
 jQuery(function ($) {
     'use strict';
     $(function () {
-        $( ".cart" ).addClass( "wppw_cart" );
+        $(".cart").addClass("wppw_cart");
         if (woocommerce_price_per_word_params.total_word.length != 0) {
             $(".single_variation_wrap").show();
             $(".woocommerce .quantity input[name='quantity']").val(woocommerce_price_per_word_params.total_word);
@@ -26,13 +26,17 @@ jQuery(function ($) {
                     $('input[name="quantity"]').val(quantity);
                     var product_price = $(".single_variation > span.price > .amount").html().replace(/[^0-9\.]+/g, '');
                     var total_amount = product_price * quantity;
-                    $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(2));
+                    var decimals_point = 2;
+                    if (typeof (woocommerce_price_per_word_params.woocommerce_price_num_decimals) != "undefined" && woocommerce_price_per_word_params.woocommerce_price_num_decimals !== null && woocommerce_price_per_word_params.woocommerce_price_num_decimals > 0) {
+                        decimals_point = woocommerce_price_per_word_params.woocommerce_price_num_decimals;
+                    }
+                    $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(decimals_point));
                     if (variations_select.length > 0) {
                         $(".ppw_total_price").show();
                     } else {
                         $(".ppw_total_price").hide();
                     }
-                  $("#ppw_file_upload_div").hide();
+                    $("#ppw_file_upload_div").hide();
 
                 }, 2);
             }
@@ -83,7 +87,11 @@ jQuery(function ($) {
                         var product_price = $(".price .amount").html().replace(/[^0-9\.]+/g, '');
                     }
                     var total_amount = product_price * quantity;
-                    $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(2));
+                    var decimals_point = 2;
+                    if (typeof (woocommerce_price_per_word_params.woocommerce_price_num_decimals) != "undefined" && woocommerce_price_per_word_params.woocommerce_price_num_decimals !== null && woocommerce_price_per_word_params.woocommerce_price_num_decimals > 0) {
+                        decimals_point = woocommerce_price_per_word_params.woocommerce_price_num_decimals;
+                    }
+                    $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(decimals_point));
                     $(".ppw_total_price").show();
                 }, 2);
             }
@@ -96,7 +104,7 @@ jQuery(function ($) {
             }
             setTimeout(function () {
                 $(".wppw_cart").submit();
-            }, 1500 );
+            }, 1500);
         });
 
         $(".wppw_cart").submit(function (event) {
@@ -144,7 +152,11 @@ jQuery(function ($) {
                         }
 
                         var total_amount = product_price * quantity;
-                        $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(2));
+                        var decimals_point = 2;
+                        if (typeof (woocommerce_price_per_word_params.woocommerce_price_num_decimals) != "undefined" && woocommerce_price_per_word_params.woocommerce_price_num_decimals !== null && woocommerce_price_per_word_params.woocommerce_price_num_decimals > 0) {
+                            decimals_point = woocommerce_price_per_word_params.woocommerce_price_num_decimals;
+                        }
+                        $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(decimals_point));
                         $(".ppw_total_price").show();
 
                     } else {
@@ -187,8 +199,8 @@ jQuery(function ($) {
                     location.reload();
                 }
             });
-           
-           return false;
+
+            return false;
         });
     });
 });

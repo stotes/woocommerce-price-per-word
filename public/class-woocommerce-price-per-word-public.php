@@ -76,7 +76,8 @@ class Woocommerce_Price_Per_Word_Public {
                     'woocommerce_price_per_word_params_nonce' => wp_create_nonce("woocommerce_price_per_word_params_nonce"),
                     'total_word' => $total_word,
                     'is_product_type_variable' => $is_product_type_variable,
-                    'woocommerce_currency_symbol_js' => get_woocommerce_currency_symbol()
+                    'woocommerce_currency_symbol_js' => get_woocommerce_currency_symbol(),
+                    'woocommerce_price_num_decimals' => wc_get_price_decimals()
                 )));
             }
         }

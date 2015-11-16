@@ -68,6 +68,11 @@ class Woocommerce_Price_Per_Word_Public {
         } else {
             $total_word = '';
         }
+        if (!empty($attach_id)) {
+            $total_character = get_post_meta($attach_id, 'total_character', true);
+        } else {
+            $total_character = '';
+        }
         if ($this->is_enable_price_per_word_public()) {
             wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-public.js', array('jquery'), $this->version, false);
             if (wp_script_is($this->plugin_name)) {
@@ -75,9 +80,11 @@ class Woocommerce_Price_Per_Word_Public {
                     'ajax_url' => admin_url('admin-ajax.php'),
                     'woocommerce_price_per_word_params_nonce' => wp_create_nonce("woocommerce_price_per_word_params_nonce"),
                     'total_word' => $total_word,
+                    'total_character' => $total_character,
                     'is_product_type_variable' => $is_product_type_variable,
                     'woocommerce_currency_symbol_js' => get_woocommerce_currency_symbol(),
-                    'woocommerce_price_num_decimals' => wc_get_price_decimals()
+                    'woocommerce_price_num_decimals' => wc_get_price_decimals(),
+                    'aewcppw_word_character' => $this->wppw_get_product_type()
                 )));
             }
         }
@@ -96,6 +103,20 @@ class Woocommerce_Price_Per_Word_Public {
         } else {
             return false;
         }
+    }
+    
+    public function wppw_get_product_type() {
+        $aewcppw_word_character = get_option('aewcppw_word_character');
+        if (empty($aewcppw_word_character)) {
+            $aewcppw_word_character = 'word';
+        } elseif ($aewcppw_word_character == 'word') {
+            $aewcppw_word_character = 'word';
+        } elseif ($aewcppw_word_character == 'character') {
+            $aewcppw_word_character = 'character';
+        } else {
+            $aewcppw_word_character = 'word';
+        }
+        return $aewcppw_word_character;
     }
 
 }

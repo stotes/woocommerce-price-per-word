@@ -17,11 +17,22 @@ jQuery(function ($) {
                 }, 2);
             } else {
                 var variations_select = $(".woocommerce div.product form.cart .variations select option:selected").attr("value");
-                if (typeof (woocommerce_price_per_word_params.total_word) != "undefined" && woocommerce_price_per_word_params.total_word !== null && woocommerce_price_per_word_params.total_word > 0) {
-                    var quantity = woocommerce_price_per_word_params.total_word;
+                if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'word') {
+
+                    if (typeof (woocommerce_price_per_word_params.total_word) != "undefined" && woocommerce_price_per_word_params.total_word !== null && woocommerce_price_per_word_params.total_word > 0) {
+                        var quantity = woocommerce_price_per_word_params.total_word;
+                    } else {
+                        var quantity = $('input[name="quantity"]').val();
+                    }
                 } else {
-                    var quantity = $('input[name="quantity"]').val();
+                    if (typeof (woocommerce_price_per_word_params.total_character) != "undefined" && woocommerce_price_per_word_params.total_character !== null && woocommerce_price_per_word_params.total_character > 0) {
+                        var quantity = woocommerce_price_per_word_params.total_character;
+                    } else {
+                        var quantity = $('input[name="quantity"]').val();
+                    }
                 }
+
+
                 setTimeout(function () {
                     $('input[name="quantity"]').val(quantity);
                     var product_price = $(".single_variation > span.price > .amount").html().replace(/[^0-9\.]+/g, '');
@@ -138,7 +149,15 @@ jQuery(function ($) {
                         }
                         $("#ppw_file_container").html(obj.message_content);
                         $("#ppw_file_container").show();
-                        $(".woocommerce .quantity input[name='quantity']").val(obj.total_word);
+
+                        if (typeof (obj.aewcppw_word_character) != "undefined" && obj.aewcppw_word_character !== null && obj.aewcppw_word_character == 'word') {
+                            $(".woocommerce .quantity input[name='quantity']").val(obj.total_word);
+                        } else {
+                            $(".woocommerce .quantity input[name='quantity']").val(obj.total_character);
+                        }
+
+
+
                         $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
 
                         var quantity = $('input[name="quantity"]').val();

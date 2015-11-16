@@ -24,7 +24,17 @@ class Woocommerce_Price_Per_Word_Setting {
 
         $fields[] = array('title' => __('WooCommerce Price Per Word Settings', 'woocommerce-price-per-word'), 'type' => 'title', 'desc' => '', 'id' => 'general_options');
 
-        
+        $fields[] = array(
+		'title'    => __( 'Use "price per word" or "price per character"', 'woocommerce' ),
+		'id'       => 'aewcppw_word_character',
+		'default'  => 'word',
+		'type'     => 'radio',
+		'desc' =>  __( 'This option is important as it will affect base on "price per word" or "price per character".', 'woocommerce' ),
+		'options'  => array(
+			'word' => __( 'Yes, I want to count price base on total word.', 'woocommerce' ),
+			'character'  => __( 'Yes, I want to count price base on total character.', 'woocommerce' )
+		),
+	);
 
         $fields[] = array(
             'title' => __('Product Page Message', 'woocommerce-price-per-word'),

@@ -1,11 +1,39 @@
 jQuery(function ($) {
     'use strict';
     $(function () {
-        $(".cart").addClass("wppw_cart");
-        if (woocommerce_price_per_word_params.total_word.length != 0) {
+        $(".cart").addClass("wppw_cart"); 
+
+        if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'word') {
+            if (typeof (woocommerce_price_per_word_params.total_word) != "undefined" && woocommerce_price_per_word_params.total_word !== null && woocommerce_price_per_word_params.total_word > 0) {
+                $(".woocommerce .quantity input[name='quantity']").val(woocommerce_price_per_word_params.total_word);
+                $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
+                $(".single_variation_wrap").show();
+                $(".single_add_to_cart_button").parent('div').show();
+            } else {
+                if (typeof (woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty) != "undefined" && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty !== null && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty == 'no') {
+                    $(".single_variation_wrap").hide();
+                    $(".single_add_to_cart_button").parent('div').hide();
+                }
+            }
+        } else {
+            if (typeof (woocommerce_price_per_word_params.total_character) != "undefined" && woocommerce_price_per_word_params.total_character !== null && woocommerce_price_per_word_params.total_character > 0) {
+                $(".woocommerce .quantity input[name='quantity']").val(woocommerce_price_per_word_params.total_character);
+                $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
+                $(".single_variation_wrap").show();
+                $(".single_add_to_cart_button").parent('div').show();
+            } else {
+                if (typeof (woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty) != "undefined" && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty !== null && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty == 'no') {
+                    $(".single_variation_wrap").hide(); 
+                    $(".single_add_to_cart_button").parent('div').hide();
+                }
+            } 
+        }
+        if (typeof (woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty) != "undefined" && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty !== null && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty == 'no') {
+            $(".single_variation_wrap").hide();
+            $(".single_add_to_cart_button").parent('div').hide();
+        } else {
             $(".single_variation_wrap").show();
-            $(".woocommerce .quantity input[name='quantity']").val(woocommerce_price_per_word_params.total_word);
-            $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
+            $(".single_add_to_cart_button").parent('div').show();
         }
         $(".variations select").change(function (event) {
             if (!$("#ppw_remove_file").length) {
@@ -13,12 +41,11 @@ jQuery(function ($) {
                     $(".single_variation_wrap").hide();
                     $(".ppw_total_price").hide();
                     $("#aewcppw_product_page_message").show();
-                    $("#ppw_file_upload_div").show();
+                    $(".ppw_file_upload_div").show();
                 }, 2);
             } else {
                 var variations_select = $(".woocommerce div.product form.cart .variations select option:selected").attr("value");
                 if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'word') {
-
                     if (typeof (woocommerce_price_per_word_params.total_word) != "undefined" && woocommerce_price_per_word_params.total_word !== null && woocommerce_price_per_word_params.total_word > 0) {
                         var quantity = woocommerce_price_per_word_params.total_word;
                     } else {
@@ -31,8 +58,6 @@ jQuery(function ($) {
                         var quantity = $('input[name="quantity"]').val();
                     }
                 }
-
-
                 setTimeout(function () {
                     $('input[name="quantity"]').val(quantity);
                     var product_price = $(".single_variation > span.price > .amount").html().replace(/[^0-9\.]+/g, '');
@@ -47,7 +72,7 @@ jQuery(function ($) {
                     } else {
                         $(".ppw_total_price").hide();
                     }
-                    $("#ppw_file_upload_div").hide();
+                    $(".ppw_file_upload_div").hide();
 
                 }, 2);
             }
@@ -62,6 +87,12 @@ jQuery(function ($) {
                     $("#aewcppw_product_page_message").hide();
                     $(".ppw_file_upload_div").hide();
                     $(".ppw_total_price").hide();
+                }
+                if ($("#ppw_remove_file").length) {
+                    setTimeout(function () {
+                        $("#aewcppw_product_page_message").hide();
+                        $(".ppw_file_upload_div").hide();
+                    }, 2);
                 }
                 $('.variations select').on('change', function (e) {
                     if (this.value.length === 0) {
@@ -102,8 +133,10 @@ jQuery(function ($) {
                     if (typeof (woocommerce_price_per_word_params.woocommerce_price_num_decimals) != "undefined" && woocommerce_price_per_word_params.woocommerce_price_num_decimals !== null && woocommerce_price_per_word_params.woocommerce_price_num_decimals > 0) {
                         decimals_point = woocommerce_price_per_word_params.woocommerce_price_num_decimals;
                     }
-                    $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(decimals_point));
-                    $(".ppw_total_price").show();
+                    if ($("#ppw_remove_file").length > 0) {
+                        $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(decimals_point));
+                        $(".ppw_total_price").show();
+                    }
                 }, 2);
             }
         });
@@ -177,6 +210,8 @@ jQuery(function ($) {
                         }
                         $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(decimals_point));
                         $(".ppw_total_price").show();
+                        $(".single_variation_wrap").show();
+                        $(".single_add_to_cart_button").parent('div').show();
 
                     } else {
                         $("#ppw_file_container").addClass("woocommerce-error");

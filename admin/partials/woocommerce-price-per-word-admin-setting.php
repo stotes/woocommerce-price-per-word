@@ -25,15 +25,23 @@ class Woocommerce_Price_Per_Word_Setting {
         $fields[] = array('title' => __('WooCommerce Price Per Word Settings', 'woocommerce-price-per-word'), 'type' => 'title', 'desc' => '', 'id' => 'general_options');
 
         $fields[] = array(
-		'title'    => __( 'Use "price per word" or "price per character"', 'woocommerce' ),
+		'title'    => __( 'Use "price per word" or "price per character"', 'woocommerce-price-per-word' ),
 		'id'       => 'aewcppw_word_character',
 		'default'  => 'word',
 		'type'     => 'radio',
-		'desc' =>  __( 'This option is important as it will affect base on "price per word" or "price per character".', 'woocommerce' ),
+		'desc' =>  __( 'This option is important as it will affect base on "price per word" or "price per character".', 'woocommerce-price-per-word' ),
 		'options'  => array(
 			'word' => __( 'Yes, I want to count price base on total word.', 'woocommerce' ),
-			'character'  => __( 'Yes, I want to count price base on total character.', 'woocommerce' )
+			'character'  => __( 'Yes, I want to count price base on total character.', 'woocommerce-price-per-word' )
 		),
+	);
+        
+        $fields[] = array(
+		'title'   => __( 'Allow users to enter QTY', 'woocommerce' ),
+		'desc'    => __( 'Allow users to enter QTY.', 'woocommerce-price-per-word' ),
+		'id'      => 'aewcppw_allow_users_to_enter_qty',
+		'default' => 'no',
+		'type'    => 'checkbox',
 	);
 
         $fields[] = array(

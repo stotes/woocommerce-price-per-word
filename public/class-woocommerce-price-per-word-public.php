@@ -61,7 +61,6 @@ class Woocommerce_Price_Per_Word_Public {
                 $is_product_type_variable = 'true';
             }
         }
-
         $attach_id = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? $_SESSION['attach_id'] : '';
         if (!empty($attach_id)) {
             $total_word = get_post_meta($attach_id, 'total_word', true);
@@ -84,11 +83,12 @@ class Woocommerce_Price_Per_Word_Public {
                     'is_product_type_variable' => $is_product_type_variable,
                     'woocommerce_currency_symbol_js' => get_woocommerce_currency_symbol(),
                     'woocommerce_price_num_decimals' => wc_get_price_decimals(),
-                    'aewcppw_word_character' => $this->wppw_get_product_type()
+                    'aewcppw_word_character' => $this->wppw_get_product_type(),
+                    'aewcppw_allow_users_to_enter_qty' => $this->aewcppw_allow_users_to_enter_qty()
                 )));
             }
         }
-        wp_enqueue_script($this->plugin_name .'-bn', plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-bn.js', array('jquery'), $this->version, false);
+        wp_enqueue_script($this->plugin_name . '-bn', plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-bn.js', array('jquery'), $this->version, false);
     }
 
     public function is_enable_price_per_word_public() {
@@ -104,7 +104,7 @@ class Woocommerce_Price_Per_Word_Public {
             return false;
         }
     }
-    
+
     public function wppw_get_product_type() {
         $aewcppw_word_character = get_option('aewcppw_word_character');
         if (empty($aewcppw_word_character)) {
@@ -117,6 +117,20 @@ class Woocommerce_Price_Per_Word_Public {
             $aewcppw_word_character = 'word';
         }
         return $aewcppw_word_character;
+    }
+
+    public function aewcppw_allow_users_to_enter_qty() {
+        $aewcppw_allow_users_to_enter_qty = get_option('aewcppw_allow_users_to_enter_qty');
+        if (empty($aewcppw_allow_users_to_enter_qty)) {
+            $aewcppw_allow_users_to_enter_qty = 'no';
+        } elseif ($aewcppw_allow_users_to_enter_qty == 'no') {
+            $aewcppw_allow_users_to_enter_qty = 'no';
+        } elseif ($aewcppw_allow_users_to_enter_qty == 'yes') {
+            $aewcppw_allow_users_to_enter_qty = 'yes';
+        } else {
+            $aewcppw_allow_users_to_enter_qty = 'no';
+        }
+        return $aewcppw_allow_users_to_enter_qty;
     }
 
 }

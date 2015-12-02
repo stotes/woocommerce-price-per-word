@@ -38,7 +38,13 @@ jQuery(function ($) {
         $(".variations select").change(function (event) {
             if (!$("#ppw_remove_file").length) {
                 setTimeout(function () {
-                    $(".single_variation_wrap").hide();
+                    if (typeof (woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty) != "undefined" && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty !== null && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty == 'no') {
+                        $(".single_variation_wrap").hide();
+                        $(".ppw_total_price").hide();
+                    } else {
+                        $(".single_variation_wrap").show();
+                        $(".ppw_total_price").show();
+                    }
                     $(".ppw_total_price").hide();
                     $("#aewcppw_product_page_message").show();
                     $(".ppw_file_upload_div").show();

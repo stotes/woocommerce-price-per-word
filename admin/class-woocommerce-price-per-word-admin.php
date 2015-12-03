@@ -110,6 +110,10 @@ class Woocommerce_Price_Per_Word_Admin {
         } else {
             update_post_meta($post_id, '_price_per_word', "no");
         }
+
+        if (isset($_POST['_minimum_product_price']) && !empty($_POST['_minimum_product_price']) && !is_array($_POST['_minimum_product_price'])) {
+            update_post_meta($post_id, '_minimum_product_price', $_POST['_minimum_product_price']);
+        }
     }
 
     public function woocommerce_before_add_to_cart_button_own() {
@@ -416,6 +420,55 @@ class Woocommerce_Price_Per_Word_Admin {
             $aewcppw_word_character = 'word';
         }
         return $aewcppw_word_character;
+    }
+
+    public function wppw_woocommerce_product_options_pricing() {
+        woocommerce_wp_text_input(array('id' => '_minimum_product_price', 'label' => __('Minimum product price', 'woocommerce') . ' (' . get_woocommerce_currency_symbol() . ')', 'data_type' => 'price'));
+    }
+
+    public function wppw_variation_panel($loop, $variation_data, $variation) {
+        $_minimum_product_price = get_post_meta($variation->ID, '_minimum_product_price', true);
+        ?>
+        <div>
+            <p class="form-row form-row-first">
+                <label><?php _e('Minimum product price', 'min-max-quantities-for-woocommerce'); ?>
+                    <input type="number" size="5" name="_minimum_product_price[<?php echo $loop; ?>]" value="<?php if ($_minimum_product_price) echo esc_attr($_minimum_product_price); ?>" /></label>
+            </p>
+        </div>
+        <?php
+    }
+
+    public function wppw_add_minimum_product_price($cart_object) {
+        foreach ($cart_object->cart_contents as $cart_key => $value) {
+            if (isset($value['variation_id']) && !empty($value['variation_id'])) {
+                $_minimum_product_price = $this->wppw_get_minimum_price($value['variation_id']);
+            } elseif (isset($value['product_id']) && !empty($value['product_id'])) {
+                $_minimum_product_price = $this->wppw_get_minimum_price($value['product_id']);
+            }
+            if ($_minimum_product_price) {
+                $value['data']->price = $_minimum_product_price;
+            }
+        }
+    }
+
+    public function wppw_woocommerce_save_product_variation($variation_id, $i) {
+        $minimum_allowed_quantity = isset($_POST['_minimum_product_price']) ? $_POST['_minimum_product_price'] : '';
+        update_post_meta($variation_id, '_minimum_product_price', $minimum_allowed_quantity[$i]);
+    }
+
+    public function wppw_get_minimum_price($product_id = null) {
+        $minimum_product_price = get_post_meta($product_id, '_minimum_product_price', true);
+        if (isset($minimum_product_price) && !empty($minimum_product_price)) {
+            return $minimum_product_price;
+        } else {
+            $minimum_product_price = get_option('_minimum_product_price');
+            if (isset($minimum_product_price) && !empty($minimum_product_price)) {
+                return $minimum_product_price;
+            } else {
+                return false;
+            }
+        }
+        
     }
 
 }

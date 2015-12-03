@@ -43,6 +43,13 @@ class Woocommerce_Price_Per_Word_Setting {
 		'default' => 'no',
 		'type'    => 'checkbox',
 	);
+        
+        $fields[] = array(
+		'title'   => __( 'Minimum product price', 'woocommerce' ),
+		'desc'    => __( 'Minimum product price.', 'woocommerce-price-per-word' ),
+		'id'      => '_minimum_product_price',
+		'type'    => 'text',
+	);
 
         $fields[] = array(
             'title' => __('Product Page Message', 'woocommerce-price-per-word'),

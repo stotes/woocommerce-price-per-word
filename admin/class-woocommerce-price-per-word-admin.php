@@ -196,7 +196,7 @@ class Woocommerce_Price_Per_Word_Admin {
                     } elseif ($file_ext == 'txt') {
                         $file_content = file_get_contents($movefile['file']);
                         $total_words = count(str_word_count($file_content, 1));
-                        $total_characters = strlen(utf8_decode($return_string));
+                        $total_characters = strlen(utf8_decode($file_content));
                         $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words, $total_characters);
                         $attachment_page = wp_get_attachment_url($attach_id);
                         $return_messge['total_word'] = $total_words;

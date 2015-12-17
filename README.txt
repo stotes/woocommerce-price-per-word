@@ -3,8 +3,8 @@ Contributors: angelleye
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=62B2PGEMVQEQY
 Tags: woocommerce, price per word
 Requires at least: 3.0.1
-Tested up to: 4.3.1
-Stable tag: 1.0.0
+Tested up to: 4.4
+Stable tag: 1.1.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -51,6 +51,13 @@ In the search field type WooCommerce Price Per Word and click Search Plugins. On
 4. Document name displayed with link to document on cart page, order complete page, and admin order items details.
 
 == Changelog ==
+
+= 1.1.0 - 12.17.2015 =
+* Tweak - Allows for pricing with more than 2 decimals. ([#17](https://github.com/angelleye/woocommerce-price-per-word/issues/17))
+* Tweak - Allows for "price per character" as well as original "price per word". ([#18](https://github.com/angelleye/woocommerce-price-per-word/issues/18))
+* Feature - Adds the option to set a minimum charge per item, so if a document only has a few words it would still charge the minimum. ([#21](https://github.com/angelleye/woocommerce-price-per-word/issues/21))
+* Feature - Adds an option you can enable so that buyers can simply enter a QTY and won't be forced to upload a document. ([#19](https://github.com/angelleye/woocommerce-price-per-word/issues/19))
+* Fix - General code improvements and bug fixes.
 
 = 1.0.0 - 10.20.2015 =
 * Initial stable release.

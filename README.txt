@@ -8,16 +8,16 @@ Stable tag: 1.1.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Dynamic pricing for WooCommerce products based on the number of words in an uploaded document.
+Dynamic pricing for WooCommerce products based on the number of words or characters in an uploaded document.
 
 == Description ==
 
 = Introduction =
 
-This plugin makes it easy to sell products or services based on a price-per-word.
+This plugin makes it easy to sell products or services based on a price-per-word or price-per-character.
 
  * Customers upload a document on the product page.
- * The word-count of the document is used to calculate the price based on the price-per-word entered for the product.
+ * The word-count / chracter-count of the document is used to calculate the price based on the price-per-word / price-per-character entered for the product.
  * Customers continue with checkout like usual, and the document is included with the order item details.
 
 = Get Involved =

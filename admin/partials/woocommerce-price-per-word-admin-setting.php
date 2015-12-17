@@ -25,28 +25,28 @@ class Woocommerce_Price_Per_Word_Setting {
         $fields[] = array('title' => __('WooCommerce Price Per Word Settings', 'woocommerce-price-per-word'), 'type' => 'title', 'desc' => '', 'id' => 'general_options');
 
         $fields[] = array(
-		'title'    => __( 'Use "price per word" or "price per character"', 'woocommerce-price-per-word' ),
+		'title'    => __( 'Set Price Per Word or Price Per Character', 'woocommerce-price-per-word' ),
 		'id'       => 'aewcppw_word_character',
 		'default'  => 'word',
 		'type'     => 'radio',
-		'desc' =>  __( 'This option is important as it will affect base on "price per word" or "price per character".', 'woocommerce-price-per-word' ),
+		'desc' =>  __( 'Choose whether to set pricing based on the number of words in a document or the number of characters.', 'woocommerce-price-per-word' ),
 		'options'  => array(
-			'word' => __( 'Yes, I want to count price base on total word.', 'woocommerce' ),
-			'character'  => __( 'Yes, I want to count price base on total character.', 'woocommerce-price-per-word' )
+			'word' => __( 'Price Per Word', 'woocommerce-price-per-word' ),
+			'character'  => __( 'Price Per Character', 'woocommerce-price-per-word' )
 		),
 	);
         
         $fields[] = array(
-		'title'   => __( 'Allow users to enter QTY', 'woocommerce' ),
-		'desc'    => __( 'Allow users to enter QTY.', 'woocommerce-price-per-word' ),
+		'title'   => __( 'QTY Accessibility', 'woocommerce-price-per-word' ),
+		'desc'    => __( 'Allow buyers to enter a QTY instead of forcing a document upload.', 'woocommerce-price-per-word' ),
 		'id'      => 'aewcppw_allow_users_to_enter_qty',
 		'default' => 'no',
 		'type'    => 'checkbox',
 	);
         
         $fields[] = array(
-		'title'   => __( 'Minimum product price', 'woocommerce' ),
-		'desc'    => __( 'Minimum product price.', 'woocommerce-price-per-word' ),
+		'title'   => __( 'Minimum Price', 'woocommerce-price-per-word' ),
+		'desc'    => __( 'Set a minimum price so that if a document does not have enough words / characters, the minimum will still be charged.', 'woocommerce-price-per-word' ),
 		'id'      => '_minimum_product_price',
 		'type'    => 'text',
 	);

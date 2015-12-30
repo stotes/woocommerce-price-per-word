@@ -431,7 +431,7 @@ class Woocommerce_Price_Per_Word_Admin {
         ?>
         <div>
             <p class="form-row form-row-first">
-                <label><?php _e('Minimum product price', 'min-max-quantities-for-woocommerce'); ?>
+                <label><?php _e('Minimum Price', 'min-max-quantities-for-woocommerce'); ?>
                     <input type="number" size="5" name="_minimum_product_price[<?php echo $loop; ?>]" value="<?php if ($_minimum_product_price) echo esc_attr($_minimum_product_price); ?>" /></label>
             </p>
         </div>

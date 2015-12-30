@@ -46,7 +46,7 @@ class Woocommerce_Price_Per_Word_Setting {
         
         $fields[] = array(
 		'title'   => __( 'Minimum Price', 'woocommerce-price-per-word' ),
-		'desc'    => __( 'Set a minimum price so that if a document does not have enough words / characters, the minimum will still be charged.', 'woocommerce-price-per-word' ),
+		'desc'    => __( 'Set a global minimum price so that if a document does not have enough words / characters, the minimum will still be charged.  This can also be set at the product level, which would override this global setting.', 'woocommerce-price-per-word' ),
 		'id'      => '_minimum_product_price',
 		'type'    => 'text',
 	);

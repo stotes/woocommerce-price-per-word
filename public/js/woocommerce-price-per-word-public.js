@@ -125,25 +125,6 @@ jQuery(function ($) {
                     $("#aewcppw_product_page_message").show();
                     $(".ppw_file_upload_div").show();
                 }
-                setTimeout(function () {
-                    var quantity = $('input[name="quantity"]').val();
-                    $('input[name="quantity"]').val(quantity);
-                    var single_variation_price = $(".single_variation > span.price > .amount").html();
-                    if (typeof (single_variation_price) != "undefined" && single_variation_price !== null && single_variation_price.length > 0) {
-                        var product_price = $(".single_variation > span.price > .amount").html().replace(/[^0-9\.]+/g, '');
-                    } else {
-                        var product_price = $(".price .amount").html().replace(/[^0-9\.]+/g, '');
-                    }
-                    var total_amount = product_price * quantity;
-                    var decimals_point = 2;
-                    if (typeof (woocommerce_price_per_word_params.woocommerce_price_num_decimals) != "undefined" && woocommerce_price_per_word_params.woocommerce_price_num_decimals !== null && woocommerce_price_per_word_params.woocommerce_price_num_decimals > 0) {
-                        decimals_point = woocommerce_price_per_word_params.woocommerce_price_num_decimals;
-                    }
-                    if ($("#ppw_remove_file").length > 0) {
-                        $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(decimals_point));
-                        $(".ppw_total_price").show();
-                    }
-                }, 2);
             }
         });
         $("input[name=ppw_file_upload]").change(function (event) {
@@ -170,6 +151,8 @@ jQuery(function ($) {
             formData.append("file", fileInputElement.files[0]);
             formData.append("name", fileInputElement.files[0].name);
             formData.append("security", woocommerce_price_per_word_params.woocommerce_price_per_word_params_nonce);
+            formData.append("product_id", $( "input[name='add-to-cart']" ).val());
+            formData.append("variation_id", $( "input[name='variation_id']" ).val());
             $.ajax({
                 url: woocommerce_price_per_word_params.ajax_url,
                 type: 'POST',
@@ -191,30 +174,14 @@ jQuery(function ($) {
 
                         if (typeof (obj.aewcppw_word_character) != "undefined" && obj.aewcppw_word_character !== null && obj.aewcppw_word_character == 'word') {
                             $(".woocommerce .quantity input[name='quantity']").val(obj.total_word);
+//                            var quantity = obj.total_word;
                         } else {
                             $(".woocommerce .quantity input[name='quantity']").val(obj.total_character);
+//                            var quantity = obj.total_character;
                         }
-
-
 
                         $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
-
-                        var quantity = $('input[name="quantity"]').val();
-
-                        $('input[name="quantity"]').val(quantity);
-                        var single_variation_price = $(".single_variation > span.price > .amount").html();
-                        if (typeof (single_variation_price) != "undefined" && single_variation_price !== null && single_variation_price.length > 0) {
-                            var product_price = $(".single_variation > span.price > .amount").html().replace(/[^0-9\.]+/g, '');
-                        } else {
-                            var product_price = $(".price .amount").html().replace(/[^0-9\.]+/g, '');
-                        }
-
-                        var total_amount = product_price * quantity;
-                        var decimals_point = 2;
-                        if (typeof (woocommerce_price_per_word_params.woocommerce_price_num_decimals) != "undefined" && woocommerce_price_per_word_params.woocommerce_price_num_decimals !== null && woocommerce_price_per_word_params.woocommerce_price_num_decimals > 0) {
-                            decimals_point = woocommerce_price_per_word_params.woocommerce_price_num_decimals;
-                        }
-                        $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(decimals_point));
+                        $(".ppw_total_amount").html(obj.product_price);
                         $(".ppw_total_price").show();
                         $(".single_variation_wrap").show();
                         $(".single_add_to_cart_button").parent('div').show();

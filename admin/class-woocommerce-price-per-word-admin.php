@@ -113,6 +113,8 @@ class Woocommerce_Price_Per_Word_Admin {
 
         if (isset($_POST['_minimum_product_price']) && !empty($_POST['_minimum_product_price']) && !is_array($_POST['_minimum_product_price'])) {
             update_post_meta($post_id, '_minimum_product_price', $_POST['_minimum_product_price']);
+        } else {
+            delete_post_meta_by_key('_minimum_product_price');
         }
     }
 
@@ -160,7 +162,8 @@ class Woocommerce_Price_Per_Word_Admin {
 
     public function ppw_file_upload_action() {
         add_filter('upload_dir', array($this, 'woocommerce_price_per_word_upload_dir'), 10, 1);
-        $return_messge = array('total_word' => '', 'total_character' => '', 'aewcppw_word_character' => $this->wppw_get_product_type(), 'message' => 'File successfully uploaded', 'url' => '', 'message_content' => '');
+
+        $return_messge = array('total_word' => '', 'total_character' => '', 'aewcppw_word_character' => $this->wppw_get_product_type(), 'message' => 'File successfully uploaded', 'url' => '', 'message_content' => '', 'product_price' => '', 'product_id' => $this->wppw_get_product_id());
         if (isset($_POST['security']) && !empty($_POST['security'])) {
             if (wp_verify_nonce($_POST['security'], 'woocommerce_price_per_word_params_nonce')) {
                 if (!function_exists('wp_handle_upload')) {
@@ -183,10 +186,15 @@ class Woocommerce_Price_Per_Word_Admin {
                             $attachment_page = wp_get_attachment_url($attach_id);
                             $return_messge['total_word'] = $total_words;
                             $return_messge['total_character'] = $total_characters;
+                            $return_messge = $this->wppw_get_product_price($return_messge);
                             $_SESSION['attach_id'] = $attach_id;
                             $_SESSION['total_words'] = $total_words;
+                            $_SESSION['product_price'] = $total_characters;
+                            $_SESSION['product_price'] = $return_messge['product_price'];
+                            $_SESSION['product_id'] = $return_messge['product_id'];
                             $_SESSION['file_name'] = '<a href="' . esc_url($attachment_page) . '" target="_blank">' . esc_html($fileArray['basename']) . '</a>';
                             $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
+
                             echo json_encode($return_messge, true);
                         } else {
                             $return_messge = array('total_word' => '', 'message' => 'Your pdf file is secured or empty.', 'url' => '');
@@ -201,8 +209,12 @@ class Woocommerce_Price_Per_Word_Admin {
                         $attachment_page = wp_get_attachment_url($attach_id);
                         $return_messge['total_word'] = $total_words;
                         $return_messge['total_character'] = $total_characters;
+                        $return_messge = $this->wppw_get_product_price($return_messge);
                         $_SESSION['attach_id'] = $attach_id;
                         $_SESSION['total_words'] = $total_words;
+                        $_SESSION['total_characters'] = $total_characters;
+                        $_SESSION['product_price'] = $return_messge['product_price'];
+                        $_SESSION['product_id'] = $return_messge['product_id'];
                         $_SESSION['file_name'] = '<a href="' . esc_url($attachment_page) . '" target="_blank">' . esc_html($fileArray['basename']) . '</a>';
                         $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                         echo json_encode($return_messge, true);
@@ -335,13 +347,11 @@ class Woocommerce_Price_Per_Word_Admin {
     public function woocommerce_checkout_cart_item_quantity_own($product_name, $values, $cart_item_key) {
         if (isset($values['ppw_custom_cart_data']) && count($values['ppw_custom_cart_data']) > 0) {
             $return_string = $product_name . "</a>";
-
             if (isset($values['ppw_custom_cart_data']['file_name']) && !empty($values['ppw_custom_cart_data']['file_name'])) {
 
                 $return_string .= '<div><span><b>File Name: </b></span>';
                 $return_string .= "<span>" . $values['ppw_custom_cart_data']['file_name'] . "</span></div>";
             }
-
             $wppw_get_product_type = $this->wppw_get_product_type();
 
             if ($wppw_get_product_type == 'word') {
@@ -355,7 +365,6 @@ class Woocommerce_Price_Per_Word_Admin {
                     $return_string .= "<span>" . $values['ppw_custom_cart_data']['total_characters'] . "</span></div>";
                 }
             }
-
             return $return_string;
         } else {
             return $product_name;
@@ -394,8 +403,12 @@ class Woocommerce_Price_Per_Word_Admin {
         if ($this->is_enable_price_per_word()) {
             global $product;
             $total_price = 0;
+            if( isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id ) {
+                $total_price = $_SESSION['product_price'];
+            }
+            
             $style = "style='display:none;'";
-            echo "<div><p class='ppw_total_price price' $style>Total Price: <span class='ppw_total_amount'>$total_price</span></p></div>";
+            echo "<div><p class='ppw_total_price price' $style>Total Price: <span class='ppw_total_amount'>" . $total_price . "</span></p></div>";
         }
     }
 
@@ -440,13 +453,44 @@ class Woocommerce_Price_Per_Word_Admin {
 
     public function wppw_add_minimum_product_price($cart_object) {
         foreach ($cart_object->cart_contents as $cart_key => $value) {
-            if (isset($value['variation_id']) && !empty($value['variation_id'])) {
-                $_minimum_product_price = $this->wppw_get_minimum_price($value['variation_id']);
-            } elseif (isset($value['product_id']) && !empty($value['product_id'])) {
-                $_minimum_product_price = $this->wppw_get_minimum_price($value['product_id']);
-            }
-            if ($_minimum_product_price) {
-                $value['data']->price = $_minimum_product_price;
+            if ($this->wppw_is_enable_price_per_word($value['product_id'])) {
+                if (isset($value['variation_id']) && !empty($value['variation_id'])) {
+                    $_minimum_product_price = $this->wppw_get_minimum_price($value['variation_id']);
+                    $sale_price = get_post_meta($value['variation_id'], '_sale_price', true);
+                    if (isset($sale_price) && !empty($sale_price)) {
+                        $product_price = $sale_price;
+                    } else {
+                        $product_price = get_post_meta($value['variation_id'], '_regular_price', true);
+                    }
+                } elseif (isset($value['product_id']) && !empty($value['product_id'])) {
+                    $_minimum_product_price = $this->wppw_get_minimum_price($value['product_id']);
+                    $sale_price = get_post_meta($value['product_id'], '_sale_price', true);
+                    if (isset($sale_price) && !empty($sale_price)) {
+                        $product_price = $sale_price;
+                    } else {
+                        $product_price = get_post_meta($value['product_id'], '_regular_price', true);
+                    }
+                }
+                if ($this->wppw_get_product_type() == 'word') {
+                    if (isset($value['ppw_custom_cart_data']['total_words']) && !empty($value['ppw_custom_cart_data']['total_words'])) {
+                        $total_words = $value['ppw_custom_cart_data']['total_words'];
+                    } else {
+                        $total_words = 1;
+                    }
+                    $final_product_price = $product_price * $total_words;
+                } else {
+                    if (isset($value['ppw_custom_cart_data']['total_characters']) && !empty($value['ppw_custom_cart_data']['total_characters'])) {
+                        $total_characters = $value['ppw_custom_cart_data']['total_characters'];
+                    } else {
+                        $total_characters = 1;
+                    }
+                    $final_product_price = $total_characters;
+                }
+                if ($_minimum_product_price != false && (floatval($_minimum_product_price) > floatval($final_product_price))) {
+                    $product_final_price = $_minimum_product_price;
+                    $value['data']->price = $product_final_price;
+                    WC()->cart->set_quantity($cart_key, 1, false);
+                }
             }
         }
     }
@@ -468,7 +512,52 @@ class Woocommerce_Price_Per_Word_Admin {
                 return false;
             }
         }
-        
+    }
+
+    public function wppw_get_product_price($return_messge) {
+        $minimum_product_price = $this->wppw_get_minimum_price($return_messge['product_id']);
+        $sale_price = get_post_meta($return_messge['product_id'], '_sale_price', true);
+        if (isset($sale_price) && !empty($sale_price)) {
+            $product_price = $sale_price;
+        } else {
+            $product_price = get_post_meta($return_messge['product_id'], '_regular_price', true);
+        }
+        if ($return_messge['aewcppw_word_character'] == 'word') {
+            $price_amount = $product_price * $return_messge['total_word'];
+        } else {
+            $price_amount = $product_price * $return_messge['total_character'];
+        }
+        if ($minimum_product_price == true && (floatval($minimum_product_price) > floatval($price_amount))) {
+            $product_final_price = $minimum_product_price;
+        } else {
+            $product_final_price = $price_amount;
+        }
+        $price_clean = array('<span class="amount">', '</span>');
+        $return_messge['product_price'] = str_replace($price_clean, '', wc_price($product_final_price));
+        return $return_messge;
+    }
+
+    public function wppw_get_product_id() {
+        $product_id = '';
+        if (isset($_POST['variation_id']) && !empty($_POST['variation_id']) && $_POST['variation_id'] != "undefined") {
+            $product_id = sanitize_text_field($_POST['variation_id']);
+        } else {
+            $product_id = sanitize_text_field($_POST['product_id']);
+        }
+        return $product_id;
+    }
+
+    public function wppw_is_enable_price_per_word($product_id) {
+        if (isset($product_id) && !empty($product_id)) {
+            $enable = get_post_meta($product_id, '_price_per_word', true);
+            if (!empty($enable) && $enable == "yes") {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
 }

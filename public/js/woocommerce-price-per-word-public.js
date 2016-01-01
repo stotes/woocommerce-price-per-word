@@ -122,6 +122,8 @@ jQuery(function ($) {
                     $(".ppw_file_upload_div").hide();
                     $(".ppw_total_price").show();
                 } else {
+                    $(".woocommerce .quantity input[name='quantity']").removeAttr("readonly");
+                    $(".woocommerce .quantity input[name='quantity']").val(1);
                     $("#aewcppw_product_page_message").show();
                     $(".ppw_file_upload_div").show();
                 }

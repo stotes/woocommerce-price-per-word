@@ -119,9 +119,10 @@ class Woocommerce_Price_Per_Word_Admin {
     }
 
     public function woocommerce_before_add_to_cart_button_own() {
+        global $product;
         if ($this->is_enable_price_per_word()) {
-            $display_or_hide_ppw_file_container = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? '' : 'style="display: none"';
-            $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? 'style="display: none"' : 'a';
+            $display_or_hide_ppw_file_container = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id']) && isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id ) ? '' : 'style="display: none"';
+            $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id']) && isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id ) ? 'style="display: none"' : 'a';
             $aewcppw_product_page_message = get_option('aewcppw_product_page_message');
             if (empty($aewcppw_product_page_message)) {
                 $aewcppw_product_page_message = 'Please upload your .doc, .docx, .pdf or .txt to get a price.';
@@ -135,7 +136,7 @@ class Woocommerce_Price_Per_Word_Admin {
             <div id="ppw_file_container" class="woocommerce-message" <?php echo $display_or_hide_ppw_file_container; ?>>
                 <?php
                 if (session_id()) {
-                    if (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) {
+                    if ( isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id']) && isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id ) {
                         echo '<input type="hidden" name="file_uploaded" value="url">';
                         echo '<a id="ppw_remove_file" data_file="' . $_SESSION['attach_id'] . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                     }

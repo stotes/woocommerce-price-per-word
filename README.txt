@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: woocommerce, price per word
 Requires at least: 3.0.1
 Tested up to: 4.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -51,6 +51,9 @@ In the search field type WooCommerce Price Per Word and click Search Plugins. On
 4. Document name displayed with link to document on cart page, order complete page, and admin order items details.
 
 == Changelog ==
+
+= 1.1.1 - 01.04.2016 =
+* Fix - Resolves issue with minimum price setting. ([#25](https://github.com/angelleye/woocommerce-price-per-word/issues/25))
 
 = 1.1.0 - 12.17.2015 =
 * Tweak - Allows for pricing with more than 2 decimals. ([#17](https://github.com/angelleye/woocommerce-price-per-word/issues/17))

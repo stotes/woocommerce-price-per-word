@@ -56,10 +56,12 @@ class Woocommerce_Price_Per_Word_Public {
         global $post, $product;
         if (is_object($post)) {
             $is_product_type_variable = 'false';
-            if (function_exists('get_product')) {
-                $product = get_product($post->ID);
-                if ($product->is_type('variable') && is_single()) {
-                    $is_product_type_variable = 'true';
+            if (function_exists('wc_get_product')) {
+                $product = wc_get_product($post);
+                if($product) {
+                    if ($product->is_type('variable') && is_single()) {
+                        $is_product_type_variable = 'true';
+                    }
                 }
             }
 

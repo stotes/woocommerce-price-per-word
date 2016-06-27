@@ -48,7 +48,7 @@ class Woocommerce_Price_Per_Word {
     public function __construct() {
 
         $this->plugin_name = 'woocommerce-price-per-word';
-        $this->version = '1.1.1';
+        $this->version = '1.1.2';
 
         $this->load_dependencies();
         $this->set_locale();

@@ -3,8 +3,8 @@ Contributors: angelleye
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=62B2PGEMVQEQY
 Tags: woocommerce, price per word
 Requires at least: 3.0.1
-Tested up to: 4.4
-Stable tag: 1.1.1
+Tested up to: 4.5.3
+Stable tag: 1.1.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -17,7 +17,7 @@ Dynamic pricing for WooCommerce products based on the number of words or charact
 This plugin makes it easy to sell products or services based on a price-per-word or price-per-character.
 
  * Customers upload a document on the product page.
- * The word-count / chracter-count of the document is used to calculate the price based on the price-per-word / price-per-character entered for the product.
+ * The word-count / character-count of the document is used to calculate the price based on the price-per-word / price-per-character entered for the product.
  * Customers continue with checkout like usual, and the document is included with the order item details.
 
 = Get Involved =
@@ -51,6 +51,9 @@ In the search field type WooCommerce Price Per Word and click Search Plugins. On
 4. Document name displayed with link to document on cart page, order complete page, and admin order items details.
 
 == Changelog ==
+
+= 1.1.2 - 06.26.2016 =
+* Fix - WooCommerce 2.6 Compatibility
 
 = 1.1.1 - 01.04.2016 =
 * Fix - Resolves issue with minimum price setting. ([#25](https://github.com/angelleye/woocommerce-price-per-word/issues/25))

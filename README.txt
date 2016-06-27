@@ -53,7 +53,7 @@ In the search field type WooCommerce Price Per Word and click Search Plugins. On
 == Changelog ==
 
 = 1.1.2 - 06.26.2016 =
-* Fix - WooCommerce 2.6 Compatibility
+* Fix - WooCommerce 2.6 Compatibility. ([#33](https://github.com/angelleye/woocommerce-price-per-word/issues/33))
 
 = 1.1.1 - 01.04.2016 =
 * Fix - Resolves issue with minimum price setting. ([#25](https://github.com/angelleye/woocommerce-price-per-word/issues/25))

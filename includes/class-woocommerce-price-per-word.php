@@ -14,7 +14,7 @@ class Woocommerce_Price_Per_Word {
      *
      * @since    1.0.0
      * @access   protected
-     * @var      Woocommerce_Price_Per_Word_Loader    $loader    Maintains and registers all hooks for the plugin.
+     * @var      Woocommerce_Price_Per_Word_Loader $loader Maintains and registers all hooks for the plugin.
      */
     protected $loader;
 
@@ -23,7 +23,7 @@ class Woocommerce_Price_Per_Word {
      *
      * @since    1.0.0
      * @access   protected
-     * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+     * @var      string $plugin_name The string used to uniquely identify this plugin.
      */
     protected $plugin_name;
 
@@ -32,7 +32,7 @@ class Woocommerce_Price_Per_Word {
      *
      * @since    1.0.0
      * @access   protected
-     * @var      string    $version    The current version of the plugin.
+     * @var      string $version The current version of the plugin.
      */
     protected $version;
 
@@ -128,7 +128,7 @@ class Woocommerce_Price_Per_Word {
     private function define_admin_hooks() {
 
         $plugin_admin = new Woocommerce_Price_Per_Word_Admin($this->get_plugin_name(), $this->get_version());
-        
+
         if (function_exists('WC')) {
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
@@ -149,14 +149,14 @@ class Woocommerce_Price_Per_Word {
             $this->loader->add_filter('woocommerce_get_cart_item_from_session', $plugin_admin, 'woocommerce_get_cart_item_from_session_own', 1, 3);
             $this->loader->add_filter('woocommerce_checkout_cart_item_quantity', $plugin_admin, 'woocommerce_checkout_cart_item_quantity_own', 1, 3);
             $this->loader->add_filter('woocommerce_cart_item_price', $plugin_admin, 'woocommerce_checkout_cart_item_quantity_own', 1, 3);
-            $this->loader->add_action('woocommerce_add_order_item_meta', $plugin_admin, 'woocommerce_add_order_item_meta_own',1,2);
-            $this->loader->add_action('woocommerce_single_product_summary', $plugin_admin, 'woocommerce_single_product_summary_own',11);
-            $this->loader->add_filter( 'woocommerce_paypal_args', $plugin_admin ,'wppw_paypal_standard_additional_parameters', 10, 1);
-            $this->loader->add_filter( 'woocommerce_product_options_pricing', $plugin_admin ,'wppw_woocommerce_product_options_pricing', 10);
-            $this->loader->add_filter( 'woocommerce_product_after_variable_attributes', $plugin_admin ,'wppw_variation_panel', 10, 3);
-            $this->loader->add_filter( 'woocommerce_before_calculate_totals', $plugin_admin ,'wppw_add_minimum_product_price', 10, 1);
-            $this->loader->add_filter( 'woocommerce_save_product_variation', $plugin_admin ,'wppw_woocommerce_save_product_variation', 10, 2);
-            
+            $this->loader->add_action('woocommerce_add_order_item_meta', $plugin_admin, 'woocommerce_add_order_item_meta_own', 1, 2);
+            $this->loader->add_action('woocommerce_single_product_summary', $plugin_admin, 'woocommerce_single_product_summary_own', 11);
+            $this->loader->add_filter('woocommerce_paypal_args', $plugin_admin, 'wppw_paypal_standard_additional_parameters', 10, 1);
+            $this->loader->add_filter('woocommerce_product_options_pricing', $plugin_admin, 'wppw_woocommerce_product_options_pricing', 10);
+            $this->loader->add_filter('woocommerce_product_after_variable_attributes', $plugin_admin, 'wppw_variation_panel', 10, 3);
+            $this->loader->add_filter('woocommerce_before_calculate_totals', $plugin_admin, 'wppw_add_minimum_product_price', 10, 1);
+            $this->loader->add_filter('woocommerce_save_product_variation', $plugin_admin, 'wppw_woocommerce_save_product_variation', 10, 2);
+            $this->loader->add_action('woocommerce_product_options_advanced', $plugin_admin, 'wppw_woocommerce_product_options_advanced');
         } else {
             $this->loader->add_action('admin_notices', $plugin_admin, 'wppw_woocommerce_missing_notice');
         }

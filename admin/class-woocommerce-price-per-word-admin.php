@@ -12,7 +12,7 @@ class Woocommerce_Price_Per_Word_Admin {
      *
      * @since    1.0.0
      * @access   private
-     * @var      string    $plugin_name    The ID of this plugin.
+     * @var      string $plugin_name The ID of this plugin.
      */
     private $plugin_name;
 
@@ -21,7 +21,7 @@ class Woocommerce_Price_Per_Word_Admin {
      *
      * @since    1.0.0
      * @access   private
-     * @var      string    $version    The current version of this plugin.
+     * @var      string $version The current version of this plugin.
      */
     private $version;
 
@@ -29,8 +29,8 @@ class Woocommerce_Price_Per_Word_Admin {
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
-     * @param      string    $plugin_name       The name of this plugin.
-     * @param      string    $version    The version of this plugin.
+     * @param      string $plugin_name The name of this plugin.
+     * @param      string $version The version of this plugin.
      */
     public function __construct($plugin_name, $version) {
 
@@ -106,6 +106,12 @@ class Woocommerce_Price_Per_Word_Admin {
         if (isset($_POST['_price_per_word'])) {
             if ($_POST['_price_per_word'] == "on") {
                 update_post_meta($post_id, '_price_per_word', "yes");
+                if (isset($_POST['_word_count_cap_status'])) {
+                    update_post_meta($post_id, '_word_count_cap_status', $_POST['_word_count_cap_status']);
+                    update_post_meta($post_id, '_word_count_cap_word_limit', $_POST['_word_count_cap_word_limit']);
+                } else {
+                    update_post_meta($post_id, '_word_count_cap_status', "close");
+                }
             }
         } else {
             update_post_meta($post_id, '_price_per_word', "no");
@@ -121,22 +127,26 @@ class Woocommerce_Price_Per_Word_Admin {
     public function woocommerce_before_add_to_cart_button_own() {
         global $product;
         if ($this->is_enable_price_per_word()) {
-            $display_or_hide_ppw_file_container = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id']) && isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id ) ? '' : 'style="display: none"';
-            $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id']) && isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id ) ? 'style="display: none"' : 'a';
+            $display_or_hide_ppw_file_container = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id']) && isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id) ? '' : 'style="display: none"';
+            $display_or_hide_ppw_file_upload_div = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id']) && isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id) ? 'style="display: none"' : 'a';
             $aewcppw_product_page_message = get_option('aewcppw_product_page_message');
             if (empty($aewcppw_product_page_message)) {
                 $aewcppw_product_page_message = 'Please upload your .doc, .docx, .pdf or .txt to get a price.';
             }
             ?>
-            <span id="aewcppw_product_page_message" <?php echo $display_or_hide_ppw_file_upload_div; ?>><?php echo $aewcppw_product_page_message; ?></span>
+            <span
+                id="aewcppw_product_page_message" <?php echo $display_or_hide_ppw_file_upload_div; ?>><?php echo $aewcppw_product_page_message; ?></span>
             <div class="ppw_file_upload_div" <?php echo $display_or_hide_ppw_file_upload_div; ?>>
-                <label for="file_upload">Select your file(s)</label><input type="file" name="ppw_file_upload" value="Add File" id="ppw_file_upload_id">
+                <label for="file_upload">Select your file(s)</label><input type="file" name="ppw_file_upload"
+                                                                           value="Add File" id="ppw_file_upload_id">
             </div>
-            <div id="ppw_loader" style="display: none;"><div class="ppw-spinner-loader">Loading...</div></div>
+            <div id="ppw_loader" style="display: none;">
+                <div class="ppw-spinner-loader">Loading...</div>
+            </div>
             <div id="ppw_file_container" class="woocommerce-message" <?php echo $display_or_hide_ppw_file_container; ?>>
                 <?php
                 if (session_id()) {
-                    if ( isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id']) && isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id ) {
+                    if (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id']) && isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id) {
                         echo '<input type="hidden" name="file_uploaded" value="url">';
                         echo '<a id="ppw_remove_file" data_file="' . $_SESSION['attach_id'] . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                     }
@@ -168,7 +178,7 @@ class Woocommerce_Price_Per_Word_Admin {
         if (isset($_POST['security']) && !empty($_POST['security'])) {
             if (wp_verify_nonce($_POST['security'], 'woocommerce_price_per_word_params_nonce')) {
                 if (!function_exists('wp_handle_upload')) {
-                    require_once( ABSPATH . 'wp-admin/includes/file.php' );
+                    require_once(ABSPATH . 'wp-admin/includes/file.php');
                 }
                 $uploadedfile = $_FILES['file'];
                 $upload_overrides = array('test_form' => false);
@@ -271,7 +281,7 @@ class Woocommerce_Price_Per_Word_Admin {
             'post_status' => 'inherit'
         );
         $attach_id = wp_insert_attachment($attachment, $filename, $parent_post_id);
-        require_once( ABSPATH . 'wp-admin/includes/image.php' );
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
         $attach_data = wp_generate_attachment_metadata($attach_id, $filename);
         wp_update_attachment_metadata($attach_id, $attach_data);
         update_post_meta($attach_id, 'total_word', $count_word);
@@ -374,7 +384,7 @@ class Woocommerce_Price_Per_Word_Admin {
 
     public function woocommerce_add_order_item_meta_own($item_id, $values) {
         global $woocommerce, $wpdb;
-        $user_custom_values = ( isset($values['ppw_custom_cart_data']) && !empty($values['ppw_custom_cart_data']) ) ? $values['ppw_custom_cart_data'] : '';
+        $user_custom_values = (isset($values['ppw_custom_cart_data']) && !empty($values['ppw_custom_cart_data'])) ? $values['ppw_custom_cart_data'] : '';
         if (!empty($user_custom_values)) {
             foreach ($user_custom_values as $key => $value) {
                 if ($key != "attach_id") {
@@ -404,10 +414,10 @@ class Woocommerce_Price_Per_Word_Admin {
         if ($this->is_enable_price_per_word()) {
             global $product;
             $total_price = 0;
-            if( isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id ) {
+            if (isset($_SESSION['product_id']) && isset($product->id) && $_SESSION['product_id'] == $product->id) {
                 $total_price = $_SESSION['product_price'];
             }
-            
+
             $style = "style='display:none;'";
             echo "<div><p class='ppw_total_price price' $style>Total Price: <span class='ppw_total_amount'>" . $total_price . "</span></p></div>";
         }
@@ -446,7 +456,8 @@ class Woocommerce_Price_Per_Word_Admin {
         <div>
             <p class="form-row form-row-first">
                 <label><?php _e('Minimum Price', 'min-max-quantities-for-woocommerce'); ?>
-                    <input type="number" size="5" name="_minimum_product_price[<?php echo $loop; ?>]" value="<?php if ($_minimum_product_price) echo esc_attr($_minimum_product_price); ?>" /></label>
+                    <input type="number" size="5" name="_minimum_product_price[<?php echo $loop; ?>]"
+                           value="<?php if ($_minimum_product_price) echo esc_attr($_minimum_product_price); ?>"/></label>
             </p>
         </div>
         <?php
@@ -559,6 +570,42 @@ class Woocommerce_Price_Per_Word_Admin {
         } else {
             return false;
         }
+    }
+
+    public function wppw_woocommerce_product_options_advanced() {
+        global $post, $product;
+        $product = get_product(get_the_ID());
+        ?>
+        <div class="word_count_cap <?php echo !$this->is_enable_price_per_word() ? 'hidden' : ''; ?>">
+            <div class="options_group word_count_cap_status">
+                <?php
+                woocommerce_wp_checkbox(array(
+                    'id' => '_word_count_cap_status',
+                    'label' => __('Enable word count cap', 'woocommerce'),
+                    'cbvalue' => 'open',
+                    'value' => esc_attr($post->_word_count_cap_status),
+                    'desc_tip' => 'true',
+                    'description' => __('Enable to set an absolute cap on word count.', 'woocommerce')
+                ));
+                ?>
+            </div>
+            <div class="options_group word_count_cap_value">
+                <?php
+                woocommerce_wp_text_input(array(
+                    'id' => '_word_count_cap_word_limit',
+                    'label' => __('Word limit', 'woocommerce'),
+                    'desc_tip' => true,
+                    'description' => __('Enter the maximum word limit to accept uploaded file words.', 'woocommerce'),
+                    'type' => 'number',
+                    'custom_attributes' => array(
+                        'step' => '1',
+                        'min' => '1'
+                    )
+                ));
+                ?>
+            </div>
+        </div>
+        <?php
     }
 
 }

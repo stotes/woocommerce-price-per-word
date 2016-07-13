@@ -193,6 +193,19 @@ class Woocommerce_Price_Per_Word_Admin {
                         if ($return_string != 'File Not exists' && $return_string != 'Invalid File Type' && !empty($return_string)) {
                             $total_words = count(str_word_count($return_string, 1));
                             $total_characters = strlen(utf8_decode($return_string));
+                            $enable_word_count_cap = $this->is_word_count_cap_enable($return_messge['product_id']);
+                            if ($enable_word_count_cap) {
+                                $word_count_cap_word_limit = get_post_meta($return_messge['product_id'], '_word_count_cap_word_limit', TRUE);
+                                if ($total_words > $word_count_cap_word_limit) {
+                                    $return_messge = array('total_word' => '', 'message' => 'Your file contains more words than word cap limit. Maximum words limit is ' . $word_count_cap_word_limit, 'url' => '');
+                                    $return_messge['total_word'] = $total_words;
+                                    $return_messge['total_character'] = $total_characters;
+                                    $return_messge['message_content'] = 'The file upload failed, Please choose a file having less words than limit one.';
+                                    @unlink($movefile['file']);
+                                    echo json_encode($return_messge, true);
+                                    exit();
+                                }
+                            }
                             $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words, $total_characters);
                             $attachment_page = wp_get_attachment_url($attach_id);
                             $return_messge['total_word'] = $total_words;
@@ -216,6 +229,21 @@ class Woocommerce_Price_Per_Word_Admin {
                         $file_content = file_get_contents($movefile['file']);
                         $total_words = count(str_word_count($file_content, 1));
                         $total_characters = strlen(utf8_decode($file_content));
+
+                        $enable_word_count_cap = $this->is_word_count_cap_enable($return_messge['product_id']);
+                        if ($enable_word_count_cap) {
+                            $word_count_cap_word_limit = get_post_meta($return_messge['product_id'], '_word_count_cap_word_limit', TRUE);
+                            if ($total_words > $word_count_cap_word_limit) {
+                                $return_messge = array('total_word' => '', 'message' => 'Your file contains more words than word cap limit. Maximum words limit is ' . $word_count_cap_word_limit, 'url' => '');
+                                $return_messge['total_word'] = $total_words;
+                                $return_messge['total_character'] = $total_characters;
+                                $return_messge['message_content'] = 'The file upload failed, Please choose a file having less words than limit one.';
+                                @unlink($movefile['file']);
+                                echo json_encode($return_messge, true);
+                                exit();
+                            }
+                        }
+
                         $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words, $total_characters);
                         $attachment_page = wp_get_attachment_url($attach_id);
                         $return_messge['total_word'] = $total_words;
@@ -606,6 +634,19 @@ class Woocommerce_Price_Per_Word_Admin {
             </div>
         </div>
         <?php
+    }
+
+    public function is_word_count_cap_enable($product_id) {
+        if (isset($product_id) && !empty($product_id)) {
+            $enable = get_post_meta($product_id, '_word_count_cap_status', true);
+            if (!empty($enable) && $enable == "open") {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
 }

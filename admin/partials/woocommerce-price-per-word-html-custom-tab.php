@@ -42,6 +42,32 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                     'description' => __('Choose whether to set pricing based on the number of words in a document or the number of characters', 'woocommerce-price-per-word'))); ?>
             </div>
 
+            <div class="word_count_cap">
+                <div class="options_group word_count_cap_status">
+                    <?php
+                    woocommerce_wp_checkbox(array(
+                        'id' => '_word_count_cap_status',
+                        'label' => __('Enable ' . $_price_per_word_character . ' count cap?', 'woocommerce'),
+                        'cbvalue' => 'open',
+                        'value' => esc_attr($post->_word_count_cap_status),
+                        'desc_tip' => 'true',
+                        'description' => __('Enable to set an absolute cap on word count.', 'woocommerce')
+                    ));
+                    woocommerce_wp_text_input(array(
+                        'id' => '_word_count_cap_word_limit',
+                        'label' => __(ucfirst($_price_per_word_character) . ' limit', 'woocommerce'),
+                        'desc_tip' => true,
+                        'description' => __('Enter the maximum word limit to accept uploaded file words.', 'woocommerce'),
+                        'type' => 'number',
+                        'custom_attributes' => array(
+                            'step' => '1',
+                            'min' => '1'
+                        )
+                    ));
+                    ?>
+                </div>
+            </div>
+
         </div>
         <?php
 

@@ -2,3 +2,6 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+.custom_tab_woocommerce_price_word_character_tab.custom_tab_woocommerce_price_word_character_tab_hidden {
+    display: none !important;
+}

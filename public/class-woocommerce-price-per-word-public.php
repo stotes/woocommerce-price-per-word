@@ -12,7 +12,7 @@ class Woocommerce_Price_Per_Word_Public {
      *
      * @since    1.0.0
      * @access   private
-     * @var      string    $plugin_name    The ID of this plugin.
+     * @var      string $plugin_name The ID of this plugin.
      */
     private $plugin_name;
 
@@ -21,7 +21,7 @@ class Woocommerce_Price_Per_Word_Public {
      *
      * @since    1.0.0
      * @access   private
-     * @var      string    $version    The current version of this plugin.
+     * @var      string $version The current version of this plugin.
      */
     private $version;
 
@@ -29,8 +29,8 @@ class Woocommerce_Price_Per_Word_Public {
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
-     * @param      string    $plugin_name       The name of the plugin.
-     * @param      string    $version    The version of this plugin.
+     * @param      string $plugin_name The name of the plugin.
+     * @param      string $version The version of this plugin.
      */
     public function __construct($plugin_name, $version) {
 
@@ -58,7 +58,7 @@ class Woocommerce_Price_Per_Word_Public {
             $is_product_type_variable = 'false';
             if (function_exists('wc_get_product')) {
                 $product = wc_get_product($post);
-                if($product) {
+                if ($product) {
                     if ($product->is_type('variable') && is_single()) {
                         $is_product_type_variable = 'true';
                     }
@@ -99,7 +99,7 @@ class Woocommerce_Price_Per_Word_Public {
     public function is_enable_price_per_word_public() {
         global $post;
         if (isset($post->ID) && !empty($post->ID)) {
-            $enable = get_post_meta($post->ID, '_price_per_word', true);
+            $enable = get_post_meta($post->ID, '_price_per_word_character_enable', true);
             if (!empty($enable) && $enable == "yes") {
                 return true;
             } else {
@@ -111,7 +111,9 @@ class Woocommerce_Price_Per_Word_Public {
     }
 
     public function wppw_get_product_type() {
-        $aewcppw_word_character = get_option('aewcppw_word_character');
+        global $post;
+        //$aewcppw_word_character = get_option('aewcppw_word_character');
+        $aewcppw_word_character = get_post_meta($post->ID, '_price_per_word_character', TRUE);
         if (empty($aewcppw_word_character)) {
             $aewcppw_word_character = 'word';
         } elseif ($aewcppw_word_character == 'word') {

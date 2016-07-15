@@ -5,7 +5,6 @@
  * @subpackage Woocommerce_Price_Per_Word/admin
  * @author     Angell EYE <service@angelleye.com>
  */
-
 class Woocommerce_Price_Per_Word_Admin_Display {
 
     /**
@@ -15,6 +14,18 @@ class Woocommerce_Price_Per_Word_Admin_Display {
      */
     public static function init() {
         add_action('admin_menu', array(__CLASS__, 'wppw_add_settings_menu'));
+
+        /**
+         * Action - Add custom Price Breaks tab in WooCommerce product tabs
+         * @since 1.2.0
+         */
+        add_action('woocommerce_product_write_panel_tabs', array(__CLASS__, 'custom_tab_price_per_word_character_settings'));
+
+        /*
+		 * Action - Add custom tab options in WooCommerce product tabs
+		 * @since	1.2.0
+		 */
+        add_action('woocommerce_product_write_panels', array(__CLASS__, 'custom_tab_options_price_per_word_character_settings'));
     }
 
     /**
@@ -36,7 +47,7 @@ class Woocommerce_Price_Per_Word_Admin_Display {
         <h2 class="nav-tab-wrapper">
             <?php
             foreach ($setting_tabs as $name => $label)
-                echo '<a href="' . admin_url('admin.php?page=woocommerce-price-per-word-option&tab=' . $name) . '" class="nav-tab ' . ( $current_tab == $name ? 'nav-tab-active' : '' ) . '">' . $label . '</a>';
+                echo '<a href="' . admin_url('admin.php?page=woocommerce-price-per-word-option&tab=' . $name) . '" class="nav-tab ' . ($current_tab == $name ? 'nav-tab-active' : '') . '">' . $label . '</a>';
             ?>
         </h2>
         <?php
@@ -48,6 +59,20 @@ class Woocommerce_Price_Per_Word_Admin_Display {
                     break;
             }
         }
+    }
+
+    public static function custom_tab_price_per_word_character_settings() {
+        global $post;
+        $_product = wc_get_product($post->ID);
+        $is_enable_price_word_character = get_post_meta($_product->id, '_price_per_word_character_enable', TRUE);
+        $class_hidden = empty($is_enable_price_word_character) ? 'custom_tab_woocommerce_price_word_character_tab_hidden' : $is_enable_price_word_character == 'no' ? 'custom_tab_woocommerce_price_word_character_tab_hidden' : '';
+        print(
+            '<li id="custom_tab_woocommerce_price_word_character_tab" class="custom_tab_woocommerce_price_word_character_tab ' . $class_hidden . '"><a href="#custom_tab_data_woocommerce_price_word_character_tab">' . __('Price per Word/Character Settings', 'woocommerce-price-per-word') . '</a></li>'
+        );
+    }
+
+    public static function custom_tab_options_price_per_word_character_settings() {
+        do_action('custom_tab_options_price_per_word_character_settings_display');
     }
 
 }

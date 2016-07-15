@@ -24,10 +24,12 @@ jQuery(function ($) {
                 if ($(".custom_tab_woocommerce_price_word_character_tab ").hasClass("active")) {
                     $("#custom_tab_data_woocommerce_price_word_character_tab").show();
                 }
+				$(".word_count_cap").show();
             } else {
                 var wppw_product_type = '';
                 $("label[for='_regular_price']").text('Regular Price ' + wppw_product_type + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
                 $(".variable_pricing p.form-row-first label").text('Regular Price ' + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
+				$(".word_count_cap").hide();
                 $(".custom_tab_woocommerce_price_word_character_tab").addClass("custom_tab_woocommerce_price_word_character_tab_hidden");
                 $("#custom_tab_data_woocommerce_price_word_character_tab").hide();
             }

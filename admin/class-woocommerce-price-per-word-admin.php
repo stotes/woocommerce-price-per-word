@@ -116,7 +116,13 @@ class Woocommerce_Price_Per_Word_Admin {
                         update_post_meta($post_id, '_price_per_word_character', "word");
                     } else {
                         update_post_meta($post_id, '_price_per_word_character', "character");
-                    }
+                if (isset($_POST['_word_count_cap_status'])) {
+                    update_post_meta($post_id, '_word_count_cap_status', $_POST['_word_count_cap_status']);
+                    update_post_meta($post_id, '_word_count_cap_word_limit', $_POST['_word_count_cap_word_limit']);
+                } else {
+                    update_post_meta($post_id, '_word_count_cap_status', "close");
+                }
+            }
                 } else {
                     update_post_meta($post_id, '_price_per_word_character', "word");
                 }
@@ -204,6 +210,19 @@ class Woocommerce_Price_Per_Word_Admin {
                         if ($return_string != 'File Not exists' && $return_string != 'Invalid File Type' && !empty($return_string)) {
                             $total_words = count(str_word_count($return_string, 1));
                             $total_characters = strlen(utf8_decode($return_string));
+                            $enable_word_count_cap = $this->is_word_count_cap_enable($return_messge['product_id']);
+                            if ($enable_word_count_cap) {
+                                $word_count_cap_word_limit = get_post_meta($return_messge['product_id'], '_word_count_cap_word_limit', TRUE);
+                                if ($total_words > $word_count_cap_word_limit) {
+                                    $return_messge = array('total_word' => '', 'message' => 'Your file contains more words than word cap limit. Maximum words limit is ' . $word_count_cap_word_limit, 'url' => '');
+                                    $return_messge['total_word'] = $total_words;
+                                    $return_messge['total_character'] = $total_characters;
+                                    $return_messge['message_content'] = 'The file upload failed, Please choose a file having less words than limit one.';
+                                    @unlink($movefile['file']);
+                                    echo json_encode($return_messge, true);
+                                    exit();
+                                }
+                            }
                             $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words, $total_characters);
                             $attachment_page = wp_get_attachment_url($attach_id);
                             $return_messge['total_word'] = $total_words;
@@ -227,6 +246,21 @@ class Woocommerce_Price_Per_Word_Admin {
                         $file_content = file_get_contents($movefile['file']);
                         $total_words = count(str_word_count($file_content, 1));
                         $total_characters = strlen(utf8_decode($file_content));
+
+                        $enable_word_count_cap = $this->is_word_count_cap_enable($return_messge['product_id']);
+                        if ($enable_word_count_cap) {
+                            $word_count_cap_word_limit = get_post_meta($return_messge['product_id'], '_word_count_cap_word_limit', TRUE);
+                            if ($total_words > $word_count_cap_word_limit) {
+                                $return_messge = array('total_word' => '', 'message' => 'Your file contains more words than word cap limit. Maximum words limit is ' . $word_count_cap_word_limit, 'url' => '');
+                                $return_messge['total_word'] = $total_words;
+                                $return_messge['total_character'] = $total_characters;
+                                $return_messge['message_content'] = 'The file upload failed, Please choose a file having less words than limit one.';
+                                @unlink($movefile['file']);
+                                echo json_encode($return_messge, true);
+                                exit();
+                            }
+                        }
+
                         $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words, $total_characters);
                         $attachment_page = wp_get_attachment_url($attach_id);
                         $return_messge['total_word'] = $total_words;
@@ -591,6 +625,55 @@ class Woocommerce_Price_Per_Word_Admin {
         if (isset($product_id) && !empty($product_id)) {
             $enable = get_post_meta($product_id, '_price_per_word_character_enable', true);
             if (!empty($enable) && $enable == "yes") {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public function wppw_woocommerce_product_options_advanced() {
+        global $post, $product;
+        $product = get_product(get_the_ID());
+        ?>
+        <div class="word_count_cap <?php echo !$this->is_enable_price_per_word() ? 'hidden' : ''; ?>">
+            <div class="options_group word_count_cap_status">
+                <?php
+                woocommerce_wp_checkbox(array(
+                    'id' => '_word_count_cap_status',
+                    'label' => __('Enable word count cap', 'woocommerce'),
+                    'cbvalue' => 'open',
+                    'value' => esc_attr($post->_word_count_cap_status),
+                    'desc_tip' => 'true',
+                    'description' => __('Enable to set an absolute cap on word count.', 'woocommerce')
+                ));
+                ?>
+            </div>
+            <div class="options_group word_count_cap_value">
+                <?php
+                woocommerce_wp_text_input(array(
+                    'id' => '_word_count_cap_word_limit',
+                    'label' => __('Word limit', 'woocommerce'),
+                    'desc_tip' => true,
+                    'description' => __('Enter the maximum word limit to accept uploaded file words.', 'woocommerce'),
+                    'type' => 'number',
+                    'custom_attributes' => array(
+                        'step' => '1',
+                        'min' => '1'
+                    )
+                ));
+                ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    public function is_word_count_cap_enable($product_id) {
+        if (isset($product_id) && !empty($product_id)) {
+            $enable = get_post_meta($product_id, '_word_count_cap_status', true);
+            if (!empty($enable) && $enable == "open") {
                 return true;
             } else {
                 return false;

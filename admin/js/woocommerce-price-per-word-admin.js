@@ -24,7 +24,6 @@ jQuery(function ($) {
                 if ($(".custom_tab_woocommerce_price_word_character_tab ").hasClass("active")) {
                     $("#custom_tab_data_woocommerce_price_word_character_tab").show();
                 }
-
             } else {
                 var wppw_product_type = '';
                 $("label[for='_regular_price']").text('Regular Price ' + wppw_product_type + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
@@ -42,17 +41,23 @@ jQuery(function ($) {
                 $(".variable_pricing p.form-row-first label").text('Price Per ' + wppw_product_type + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
                 $("label[for='_word_count_cap_status']").text('Enable ' + wppw_product_type.toLowerCase() + 'count cap?');
                 $("label[for='_word_count_cap_word_limit']").text(wppw_product_type + 'limit');
+                $("#price-breaks-list .min-title-head").text("Min Words");
+                $("#price-breaks-list .max-title-head").text("Max Words");
             } else if ($(this).val() == 'character') {
                 var wppw_product_type = 'Character ';
                 $("label[for='_regular_price']").text('Price Per ' + wppw_product_type + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
                 $(".variable_pricing p.form-row-first label").text('Price Per ' + wppw_product_type + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
                 $("label[for='_word_count_cap_status']").text('Enable ' + wppw_product_type.toLowerCase() + 'count cap?');
                 $("label[for='_word_count_cap_word_limit']").text(wppw_product_type + 'limit');
+                $("#price-breaks-list .min-title-head").text("Min Characters");
+                $("#price-breaks-list .max-title-head").text("Max Characters");
             }
             else {
                 var wppw_product_type = ' ';
                 $("label[for='_regular_price']").text('Regular Price ' + wppw_product_type + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
                 $(".variable_pricing p.form-row-first label").text('Regular Price ' + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
+                $("#price-breaks-list .min-title-head").text("Min Words");
+                $("#price-breaks-list .max-title-head").text("Max Words");
             }
         });
 
@@ -119,4 +124,96 @@ jQuery(function ($) {
             }, 3000);
         }
     });
+
+    $("input[name='price-breaks-max[]']").live('keyup', function (e) {
+        if ($.trim($(this).val()) != ">") {
+            $(this).val($(this).val().replace(/[^0-9]/g, ''));
+        }
+    });
+
+    $("table#price-breaks-list a.remove:first").hide();
+
+    // Add button functionality
+    $("table#price-breaks-list a.add").click(function () {
+        var $last_max_field = $("input[name='price-breaks-max[]']").last().val();
+        if ($last_max_field == ">") {
+            alert("The last max field value must be greather than 0 to add more row.");
+            return false;
+        }
+
+        var master = $(this).parents("table#price-breaks-list");
+        // Get a new row based on the prototype row
+        var prot = master.find(".prototype").clone();
+        prot.attr("class", "")
+        //if ($("input[name='price-breaks-max[]']").size() == 1) {
+        var $last_max_value = $("input[name='price-breaks-max[]']").last().parents("tr").find("input[name='price-breaks-max[]']").val();
+        prot.find("input[name='price-breaks-min[]']").attr("value", parseInt($last_max_value) + 1);
+        prot.find("input[name='price-breaks-max[]']").attr("value", ">");
+        prot.find("a.remove").show();
+
+        master.find("tbody").append(prot);
+    });
+
+    // Remove button functionality
+    $("table#price-breaks-list a.remove").live("click", function () {
+        if (!$(this).parents("tr").hasClass("prototype")) {
+            console.log($(this).is(':last-child'));
+            if ($(this).parents("tr").is(':last-child')) {
+                $(this).parents("tr").prev().find("input[name='price-breaks-max[]']").attr("value", ">");
+            }
+            var $last_max_value = $(this).parents("tr").prev().find("input[name='price-breaks-max[]']").val();
+            console.log($last_max_value);
+            $(this).parents("tr").next().find("input[name='price-breaks-min[]']").attr("value", parseInt($last_max_value) + 1);
+            $(this).parents("tr").remove();
+
+        }
+
+
+    });
+
+    $("#_is_enable_price_breaks").click(function () {
+        if ($(this).is(":checked")) {
+            $("#custom_tab_data_woocommerce_price_word_character_tab #price-breaks-list").show();
+        }
+        else {
+            $("#custom_tab_data_woocommerce_price_word_character_tab #price-breaks-list").hide();
+        }
+    });
+
+    $(document).on("blur", "input[name='price-breaks-max[]']", function () {
+        var $min_element = $("input[name='price-breaks-min[]']");
+        var $max_element = $("input[name='price-breaks-max[]']");
+        var $max = parseInt($(this).val());
+        var $max_without_parse = $(this).val();
+        var $min = parseInt($(this).parents("tr").find($min_element).val());
+        if ($max == ">" && $(this).parents("tr").next("tr").length == 0) {
+            return false;
+        }
+        else if ($(this).parents("tr").next("tr").length == 0) {
+            if ($max_without_parse != ">" && (isNaN($max) || $max <= $min) || $max == '') {
+                alert("The Last max field must be greather than min value.");
+                $(this).val(">");
+            }
+            if ($(this).val() != '>') {
+                $("table#price-breaks-list a.add").trigger("click");
+            }
+        }
+        else if ($(this).parents("tr").next("tr").length > 0) {
+            // check next tr having or not
+            var $next_min = parseInt($(this).parents("tr").next("tr").find($min_element).val());
+            if ($max <= $min || ($max_without_parse == '>') || isNaN($max)) {
+                alert("Max field must be greather than min value.");
+                $(this).val(parseInt($(this).parents("tr").next().find($min_element).val()) - 1);
+            }
+            else if ($max >= $next_min || ($next_min - $max) > 1) {
+                alert("Note: Next all rows is reseting.");
+                $(this).parents("tr").nextAll().not(":last-child").remove();
+                $(this).parents("tr").next("tr").find($min_element).val($max + 1)
+            }
+            else if ($max < $next_min) {
+
+            }
+        }
+    });
+
 });

@@ -131,6 +131,29 @@ class Woocommerce_Price_Per_Word_Admin {
                     update_post_meta($post_id, '_word_count_cap_status', "close");
                 }
 
+                /*
+                * Enable Price Breaks meta value
+                * */
+                if (isset($_POST['_is_enable_price_breaks'])) {
+                    update_post_meta($post_id, '_is_enable_price_breaks', "yes");
+                    $price_breaks_array = array();
+                    for ($row = 0; $row < count($_POST['price-breaks-min']); $row++) {
+                        if ((isset($_POST['price-breaks-min'][$row]) && strlen($_POST['price-breaks-min'][$row]))
+                            && (isset($_POST['price-breaks-max'][$row]) && strlen($_POST['price-breaks-max'][$row]))
+                            && (isset($_POST['price-breaks-price'][$row]) && strlen($_POST['price-breaks-price'][$row]))
+                        ) {
+                            $price_breaks_array[] = array(
+                                "min" => $_POST['price-breaks-min'][$row],
+                                "max" => $_POST['price-breaks-max'][$row],
+                                "price" => $_POST['price-breaks-price'][$row]
+                            );
+                        }
+                    }
+                    update_post_meta($post_id, '_price_breaks_array', maybe_serialize($price_breaks_array));
+                } else {
+                    update_post_meta($post_id, '_is_enable_price_breaks', "no");
+                }
+
             } else {
                 update_post_meta($post_id, '_price_per_word_character_enable', "no");
             }
@@ -234,6 +257,8 @@ class Woocommerce_Price_Per_Word_Admin {
                                     exit();
                                 }
                             }
+
+
                             $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words, $total_characters);
                             $attachment_page = wp_get_attachment_url($attach_id);
                             $return_messge['total_word'] = $total_words;
@@ -419,7 +444,7 @@ class Woocommerce_Price_Per_Word_Admin {
                 $return_string .= '<div><span><b>File Name: </b></span>';
                 $return_string .= "<span>" . $values['ppw_custom_cart_data']['file_name'] . "</span></div>";
             }
-            echo $wppw_get_product_type = $this->wppw_get_product_type_by_product_id($values['product_id']);
+            $wppw_get_product_type = $this->wppw_get_product_type_by_product_id($values['product_id']);
             //print_r($values);
             if ($wppw_get_product_type == 'word') {
                 if (isset($values['ppw_custom_cart_data']['total_words']) && !empty($values['ppw_custom_cart_data']['total_words'])) {
@@ -542,19 +567,44 @@ class Woocommerce_Price_Per_Word_Admin {
                 if (isset($value['variation_id']) && !empty($value['variation_id'])) {
                     $_minimum_product_price = $this->wppw_get_minimum_price($value['variation_id']);
                     $sale_price = get_post_meta($value['variation_id'], '_sale_price', true);
-                    if (isset($sale_price) && !empty($sale_price)) {
-                        $product_price = $sale_price;
+                    if ($this->is_price_breaks_enable($value['product_id'])) {
+                        $product_price = $this->get_price_from_price_break_range($value['product_id'], array("total_word" => $value['quantity'],
+                            "total_character" => $value['quantity']));
+                        if (isset($product_price) && !empty($product_price)) {
+                            $product_price = $product_price;
+                        } else if (isset($sale_price) && !empty($sale_price)) {
+                            $product_price = $sale_price;
+                        } else {
+                            $product_price = get_post_meta($value['product_id'], '_regular_price', true);
+                        }
                     } else {
-                        $product_price = get_post_meta($value['variation_id'], '_regular_price', true);
+                        if (isset($sale_price) && !empty($sale_price)) {
+                            $product_price = $sale_price;
+                        } else {
+                            $product_price = get_post_meta($value['variation_id'], '_regular_price', true);
+                        }
                     }
                 } elseif (isset($value['product_id']) && !empty($value['product_id'])) {
                     $_minimum_product_price = $this->wppw_get_minimum_price($value['product_id']);
                     $sale_price = get_post_meta($value['product_id'], '_sale_price', true);
-                    if (isset($sale_price) && !empty($sale_price)) {
-                        $product_price = $sale_price;
+                    if ($this->is_price_breaks_enable($value['product_id'])) {
+                        $product_price = $this->get_price_from_price_break_range($value['product_id'], array("total_word" => $value['quantity'],
+                            "total_character" => $value['quantity']));
+                        if (isset($product_price) && !empty($product_price)) {
+                            $product_price = $product_price;
+                        } else if (isset($sale_price) && !empty($sale_price)) {
+                            $product_price = $sale_price;
+                        } else {
+                            $product_price = get_post_meta($value['product_id'], '_regular_price', true);
+                        }
                     } else {
-                        $product_price = get_post_meta($value['product_id'], '_regular_price', true);
+                        if (isset($sale_price) && !empty($sale_price)) {
+                            $product_price = $sale_price;
+                        } else {
+                            $product_price = get_post_meta($value['product_id'], '_regular_price', true);
+                        }
                     }
+
                 }
                 if ($this->wppw_get_product_type_by_product_id($value['product_id']) == 'word') {
                     if (isset($value['ppw_custom_cart_data']['total_words']) && !empty($value['ppw_custom_cart_data']['total_words'])) {
@@ -575,6 +625,14 @@ class Woocommerce_Price_Per_Word_Admin {
                     $product_final_price = $_minimum_product_price;
                     $value['data']->price = $product_final_price;
                     WC()->cart->set_quantity($cart_key, 1, false);
+                } else if ($this->is_price_breaks_enable($value['product_id']) && (floatval($_minimum_product_price) < floatval($final_product_price))) {
+                    $product_final_price = $product_price;
+                    $value['data']->price = $product_final_price;
+                    if ($this->wppw_get_product_type_by_product_id($value['product_id']) == 'word') {
+                        WC()->cart->set_quantity($cart_key, $value['quantity'], false);
+                    } else {
+                        WC()->cart->set_quantity($cart_key, $value['quantity'], false);
+                    }
                 }
             }
         }
@@ -601,6 +659,48 @@ class Woocommerce_Price_Per_Word_Admin {
 
     public function wppw_get_product_price($return_messge) {
         $minimum_product_price = $this->wppw_get_minimum_price($return_messge['product_id']);
+
+        // Check to Price breaks enable
+        $enable_price_break = $this->is_price_breaks_enable($return_messge['product_id']);
+        if ($enable_price_break) {
+            $product = wc_get_product($return_messge['product_id']);
+            if ($product->is_type('simple')) {
+
+                if ($return_messge['aewcppw_word_character'] == 'word') {
+                    $total_word_or_character = $return_messge['total_word'];
+                } else {
+                    $total_word_or_character = $return_messge['total_character'];
+                }
+
+                $product_price = $this->get_price_from_price_break_range($return_messge['product_id'], $return_messge);
+                $sale_price = get_post_meta($return_messge['product_id'], '_sale_price', true);
+                if (isset($product_price) && !empty($product_price)) {
+                    $product_price = $product_price;
+                } else if (isset($sale_price) && !empty($sale_price)) {
+                    $product_price = $sale_price;
+                } else {
+                    $product_price = get_post_meta($return_messge['product_id'], '_regular_price', true);
+                }
+                if ($return_messge['aewcppw_word_character'] == 'word') {
+                    $price_amount = $product_price * $return_messge['total_word'];
+                } else {
+                    $price_amount = $product_price * $return_messge['total_character'];
+                }
+
+                if ($minimum_product_price == true && (floatval($minimum_product_price) > floatval($price_amount))) {
+                    $product_final_price = $minimum_product_price;
+                } else {
+                    $product_final_price = $price_amount;
+                }
+                $_SESSION['breaks_price_of_product'] = $product_price;
+
+                $price_clean = array('<span class="amount">', '</span>');
+                $return_messge['product_price'] = str_replace($price_clean, '', wc_price($product_final_price));
+                return $return_messge;
+            }
+        }
+
+
         $sale_price = get_post_meta($return_messge['product_id'], '_sale_price', true);
         if (isset($sale_price) && !empty($sale_price)) {
             $product_price = $sale_price;
@@ -617,9 +717,33 @@ class Woocommerce_Price_Per_Word_Admin {
         } else {
             $product_final_price = $price_amount;
         }
+
         $price_clean = array('<span class="amount">', '</span>');
         $return_messge['product_price'] = str_replace($price_clean, '', wc_price($product_final_price));
         return $return_messge;
+    }
+
+    public function get_price_from_price_break_range($product_id, $return_data) {
+        $price_breaks = $this->get_product_price_breaks($product_id);
+        $wppw_get_product_type = $this->wppw_get_product_type_by_product_id($product_id);
+        if ($wppw_get_product_type == 'word') {
+            $total_word_or_character = $return_data['total_word'];
+        } else {
+            $total_word_or_character = $return_data['total_character'];
+        }
+        for ($price_break = 0; $price_break < count($price_breaks); $price_break++) {
+            if ($total_word_or_character >= $price_breaks[$price_break]['min']) {
+                if ($price_breaks[$price_break]['max'] == '>') {
+                    return $product_price = $price_breaks[$price_break]['price']; //(($total_word_or_character - $price_breaks[$price_break]['min']) * $price_breaks[$price_break]['price']);
+                } else if ($total_word_or_character <= $price_breaks[$price_break]['max']) {
+                    return $product_price = $price_breaks[$price_break]['price']; // (($price_breaks[$price_break]['max'] - $price_breaks[$price_break]['min']) * $price_breaks[$price_break]['price']);
+                } else {
+                    //$price_amount = $price_amount + (($total_word_or_character - $price_breaks[$price_break]['min']) * $price_breaks[$price_break]['price']);
+                }
+            } else {
+                break;
+            }
+        }
     }
 
     public function wppw_get_product_id() {
@@ -656,6 +780,25 @@ class Woocommerce_Price_Per_Word_Admin {
         } else {
             return false;
         }
+    }
+
+    public function is_price_breaks_enable($product_id) {
+        if (isset($product_id) && !empty($product_id)) {
+            $enable = get_post_meta($product_id, '_is_enable_price_breaks', true);
+            if (!empty($enable) && $enable == "yes") {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public function get_product_price_breaks($product_id) {
+        $price_breaks_serialize = get_post_meta($product_id, '_price_breaks_array', true);
+        $price_breaks = maybe_unserialize($price_breaks_serialize);
+        return $price_breaks;
     }
 
 }

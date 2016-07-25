@@ -1,7 +1,7 @@
 jQuery(function ($) {
     'use strict';
     $(function () {
-        $(".cart").addClass("wppw_cart"); 
+        $(".cart").addClass("wppw_cart");
 
         if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'word') {
             if (typeof (woocommerce_price_per_word_params.total_word) != "undefined" && woocommerce_price_per_word_params.total_word !== null && woocommerce_price_per_word_params.total_word > 0) {
@@ -23,10 +23,10 @@ jQuery(function ($) {
                 $(".single_add_to_cart_button").parent('div').show();
             } else {
                 if (typeof (woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty) != "undefined" && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty !== null && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty == 'no') {
-                    $(".single_variation_wrap").hide(); 
+                    $(".single_variation_wrap").hide();
                     $(".single_add_to_cart_button").parent('div').hide();
                 }
-            } 
+            }
         }
         if (typeof (woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty) != "undefined" && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty !== null && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty == 'no') {
             $(".single_variation_wrap").hide();
@@ -123,9 +123,13 @@ jQuery(function ($) {
                     $(".ppw_total_price").show();
                 } else {
                     $(".woocommerce .quantity input[name='quantity']").removeAttr("readonly");
-                    $(".woocommerce .quantity input[name='quantity']").val(1);
+                    $(".woocommerce .quantity input[name='quantity']").val();
                     $("#aewcppw_product_page_message").show();
                     $(".ppw_file_upload_div").show();
+
+                    $(".woocommerce .quantity input[name='quantity']").attr("readonly", "readonly");
+                    $(".woocommerce .quantity").hide();
+                    $(".woocommerce .single_add_to_cart_button").hide();
                 }
             }
         });
@@ -153,8 +157,8 @@ jQuery(function ($) {
             formData.append("file", fileInputElement.files[0]);
             formData.append("name", fileInputElement.files[0].name);
             formData.append("security", woocommerce_price_per_word_params.woocommerce_price_per_word_params_nonce);
-            formData.append("product_id", $( "input[name='add-to-cart']" ).val());
-            formData.append("variation_id", $( "input[name='variation_id']" ).val());
+            formData.append("product_id", $("input[name='add-to-cart']").val());
+            formData.append("variation_id", $("input[name='variation_id']").val());
             $.ajax({
                 url: woocommerce_price_per_word_params.ajax_url,
                 type: 'POST',
@@ -187,6 +191,10 @@ jQuery(function ($) {
                         $(".ppw_total_price").show();
                         $(".single_variation_wrap").show();
                         $(".single_add_to_cart_button").parent('div').show();
+
+                        //show quantity and cart button for the simple product
+                        $(".woocommerce .quantity").show();
+                        $(".woocommerce .single_add_to_cart_button").show();
 
                     } else {
                         $("#ppw_file_container").addClass("woocommerce-error");

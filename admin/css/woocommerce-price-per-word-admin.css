@@ -5,3 +5,15 @@
 .custom_tab_woocommerce_price_word_character_tab.custom_tab_woocommerce_price_word_character_tab_hidden {
     display: none !important;
 }
+
+#custom_tab_data_woocommerce_price_word_character_tab #price-breaks-container {
+    padding: 0px 20px;
+}
+
+#custom_tab_data_woocommerce_price_word_character_tab #price-breaks-list {
+    display: none;
+}
+
+#custom_tab_data_woocommerce_price_word_character_tab #price-breaks-list td input {
+    width: 100%;
+}

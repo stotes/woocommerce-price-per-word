@@ -216,4 +216,108 @@ jQuery(function ($) {
         }
     });
 
+    $('#ppw-bulk-tool-action-target-type').change(function () {
+        if ($(this).val() == 'where') {
+            $('.ppw-bulk-tool-action-target-where-type').show();
+            $('#ppw-bulk-tool-action-target-where-type').attr("required", "required");
+        }
+        else {
+            $('.ppw-bulk-tool-action-target-where-type').hide();
+            $('.ppw-bulk-tool-target-where-category').hide();
+            $('.ppw-bulk-tool-target-where-product-type').hide();
+            $('.ppw-bulk-tool-action-target-where-price-value').hide();
+
+            $('#ppw-bulk-tool-action-target-where-type').removeAttr("required", "required");
+            $('#ppw-bulk-tool-target-where-category').removeAttr("required", "required");
+            $('#ppw-bulk-tool-target-where-product-type').removeAttr("required", "required");
+            $('#ppw-bulk-tool-action-target-where-price-value').removeAttr("required", "required");
+        }
+    });
+
+    $('#ppw-bulk-tool-action-target-where-type').change(function () {
+        $('.ppw-bulk-tool-target-where-category').hide();
+        $('.ppw-bulk-tool-target-where-product-type').hide();
+        $('.ppw-bulk-tool-action-target-where-price-value').hide();
+
+        $('#ppw-bulk-tool-action-target-where-type').removeAttr("required", "required");
+        $('#ppw-bulk-tool-target-where-category').removeAttr("required", "required");
+        $('#ppw-bulk-tool-target-where-product-type').removeAttr("required", "required");
+        $('#ppw-bulk-tool-action-target-where-price-value').removeAttr("required", "required");
+
+        if ($(this).val() == 'category') {
+            $(".ppw-bulk-tool-target-where-category").show();
+            $('#ppw-bulk-tool-target-where-category').attr("required", "required");
+        }
+        else if ($(this).val() == 'product_type') {
+            $(".ppw-bulk-tool-target-where-product-type").show();
+            $('#ppw-bulk-tool-target-where-product-type').attr("required", "required");
+        }
+        else if ($(this).val() == 'price_greater' || $(this).val() == 'price_less') {
+            $(".ppw-bulk-tool-action-target-where-price-value").show();
+            $('#ppw-bulk-tool-action-target-where-price-value').attr("required", "required");
+        }
+    });
+
+    // AJAX - Bulk enable/disable tool
+    $('#ppw_tool_enable_price_per_words_characters').submit(function () {
+        // show processing status
+        $('#ppw-tool-bulk-submit').attr('disabled', 'disabled');
+        $('#ppw-tool-bulk-submit').removeClass('button-primary');
+        $('#ppw-tool-bulk-submit').html('<i class="ofwc-spinner"></i> Processing, please wait...');
+        $('#ppw-tool-bulk-submit i.spinner').show();
+
+        var actionType = $('#ppw-bulk-tool-action-type').val();
+        var actionTargetType = $('#ppw-bulk-tool-action-target-type').val();
+        var actionTargetWhereType = $('#ppw-bulk-tool-action-target-where-type').val();
+        var actionTargetWhereCategory = $('#ppw-bulk-tool-target-where-category').val();
+        var actionTargetWhereProductType = $('#ppw-bulk-tool-target-where-product-type').val();
+        var actionTargetWherePriceValue = $('#ppw-bulk-tool-action-target-where-price-value').val();
+
+        var auto_price_per_word_or_character_enable = "";
+
+
+        if ($("#ppw-bulk-tool-action-type").val() === "enable_price_per_words" ||
+            $("#ppw-bulk-tool-action-type").val() === "enable_price_per_characters" ||
+            $("#ppw-bulk-tool-action-type").val() === "disable_price_per_words_chacacters") {
+            auto_price_per_word_or_character_enable = "_price_per_word_character_enable";
+        }
+
+        /*if(  $("#ppw-bulk-tool-action-type").val() === "decline_disable" ) {
+         auto_accept_or_decline_enable = "_offers_for_woocommerce_auto_decline_enabled";
+         auto_accept_or_decline_percentage =  $("#ppw-bulk-tool-auto-decline-percentage").val();
+         }*/
+
+
+        var data = {
+            'action': 'adminToolBulkEnableDisablePricePerWordsCharacters',
+            'actionType': actionType,
+            'actionTargetType': actionTargetType,
+            'actionTargetWhereType': actionTargetWhereType,
+            'actionTargetWhereCategory': actionTargetWhereCategory,
+            'actionTargetWhereProductType': actionTargetWhereProductType,
+            'actionTargetWherePriceValue': actionTargetWherePriceValue,
+            'ppw_meta_key_value': auto_price_per_word_or_character_enable,
+        };
+
+        // post it
+        $.post(ajaxurl, data, function (response) {
+            if ('failed' !== response) {
+                var redirectUrl = response;
+
+                /** Debug **/
+                    //console.log(redirectUrl);
+                    //return false;
+
+                top.location.replace(redirectUrl);
+                return false;
+            }
+            else {
+                alert('Error updating records.');
+                return false;
+            }
+        });
+        /*End Post*/
+        return false;
+    });
+
 });

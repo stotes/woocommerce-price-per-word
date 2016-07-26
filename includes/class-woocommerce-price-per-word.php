@@ -156,6 +156,12 @@ class Woocommerce_Price_Per_Word {
             $this->loader->add_filter('woocommerce_product_after_variable_attributes', $plugin_admin, 'wppw_variation_panel', 10, 3);
             $this->loader->add_filter('woocommerce_before_calculate_totals', $plugin_admin, 'wppw_add_minimum_product_price', 10, 1);
             $this->loader->add_filter('woocommerce_save_product_variation', $plugin_admin, 'wppw_woocommerce_save_product_variation', 10, 2);
+
+            /*
+             * Action - Ajax 'bulk enable/disable tool' from settings/tools
+             * @since	0.1.0
+             */
+            $this->loader->add_filter('wp_ajax_adminToolBulkEnableDisablePricePerWordsCharacters', $plugin_admin, 'adminToolBulkEnableDisablePricePerWordsCharactersCallback');
         } else {
             $this->loader->add_action('admin_notices', $plugin_admin, 'wppw_woocommerce_missing_notice');
         }

@@ -801,4 +801,143 @@ class Woocommerce_Price_Per_Word_Admin {
         return $price_breaks;
     }
 
+    /*
+     * Action - Ajax 'bulk enable/disable tool' from offers settings/tools
+     * @since	0.1.0
+     */
+    public function adminToolBulkEnableDisablePricePerWordsCharactersCallback() {
+        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+            global $wpdb;
+            $processed_product_id = array();
+            $errors = FALSE;
+            $products = FALSE;
+            $product_ids = FALSE;
+            $update_count = 0;
+            $where_args = array(
+                'post_type' => array('product', 'product_variation'),
+                'posts_per_page' => -1,
+                'post_status' => 'publish',
+                'fields' => 'id=>parent',
+            );
+            $where_args['meta_query'] = array();
+
+            $ppw_bulk_action_type = (isset($_POST["actionType"])) ? $_POST['actionType'] : FALSE;
+            $ppw_bulk_action_target_type = (isset($_POST["actionTargetType"])) ? $_POST['actionTargetType'] : FALSE;
+            $ppw_bulk_action_target_where_type = (isset($_POST["actionTargetWhereType"])) ? $_POST['actionTargetWhereType'] : FALSE;
+            $ppw_bulk_action_target_where_category = (isset($_POST["actionTargetWhereCategory"])) ? $_POST['actionTargetWhereCategory'] : FALSE;
+            $ppw_bulk_action_target_where_product_type = (isset($_POST["actionTargetWhereProductType"])) ? $_POST['actionTargetWhereProductType'] : FALSE;
+            $ppw_bulk_action_target_where_price_value = (isset($_POST["actionTargetWherePriceValue"])) ? $_POST['actionTargetWherePriceValue'] : FALSE;
+            $ppw_bulk_action_target_where_stock_value = (isset($_POST["actionTargetWhereStockValue"])) ? $_POST['actionTargetWhereStockValue'] : FALSE;
+            $ppw_meta_key_value = (isset($_POST['ppw_meta_key_value']) && !empty($_POST["ppw_meta_key_value"])) ? $_POST['ppw_meta_key_value'] : FALSE;
+
+
+            if (!$ppw_bulk_action_type || !$ppw_bulk_action_target_type) {
+                $errors = TRUE;
+            }
+            if (!$ppw_meta_key_value) {
+                $errors = TRUE;
+            }
+
+            $ppw_bulk_action_type_status = ($ppw_bulk_action_type == 'enable_price_per_words' || $ppw_bulk_action_type == 'enable_price_per_characters') ? 'yes' : 'no';
+
+            // All Products
+            if ($ppw_bulk_action_target_type == 'all') {
+                $products = new WP_Query($where_args);
+            } // Featured products
+            elseif ($ppw_bulk_action_target_type == 'featured') {
+                array_push($where_args['meta_query'],
+                    array(
+                        'key' => '_featured',
+                        'value' => 'yes'
+                    )
+                );
+                $products = new WP_Query($where_args);
+            } // Where
+            elseif ($ppw_bulk_action_target_type == 'where' && $ppw_bulk_action_target_where_type) {
+                // Where - By Category
+                if ($ppw_bulk_action_target_where_type == 'category' && $ppw_bulk_action_target_where_category) {
+                    $where_args['product_cat'] = $ppw_bulk_action_target_where_category;
+                    $products = new WP_Query($where_args);
+
+                } // Where - By Product type
+                elseif ($ppw_bulk_action_target_where_type == 'product_type' && $ppw_bulk_action_target_where_product_type) {
+                    $where_args['product_type'] = $ppw_bulk_action_target_where_product_type;
+                    $products = new WP_Query($where_args);
+
+                } // Where - By Price - greater than
+                elseif ($ppw_bulk_action_target_where_type == 'price_greater') {
+                    array_push($where_args['meta_query'],
+                        array(
+                            'key' => '_price',
+                            'value' => str_replace(",", "", number_format($ppw_bulk_action_target_where_price_value, 2, '.', '')),
+                            'compare' => '>',
+                            'type' => 'DECIMAL(10,2)'
+                        )
+                    );
+                    $products = new WP_Query($where_args);
+
+                } // Where - By Price - less than
+                elseif ($ppw_bulk_action_target_where_type == 'price_less') {
+                    array_push($where_args['meta_query'],
+                        array(
+                            'key' => '_price',
+                            'value' => str_replace(",", "", number_format($ppw_bulk_action_target_where_price_value, 2, '.', '')),
+                            'compare' => '<',
+                            'type' => 'DECIMAL(10,2)'
+                        )
+                    );
+                    $products = new WP_Query($where_args);
+                }
+
+            } else {
+                $errors = TRUE;
+            }
+
+            // Update posts
+            if (!$errors && $products) {
+                if (count($products->posts) < 1) {
+                    $errors = TRUE;
+                    $update_count = 'zero';
+                    $redirect_url = admin_url('admin.php?page=woocommerce-price-per-word-option&tab=tools&processed=' . $update_count);
+                    echo $redirect_url;
+                } else {
+                    foreach ($products->posts as $target) {
+                        $target_product_id = ($target->post_parent != '0') ? $target->post_parent : $target->ID;
+                        if (get_post_type($target_product_id) == 'product' && !in_array($target_product_id, $processed_product_id)) {
+                            if (!update_post_meta($target_product_id, $ppw_meta_key_value, $ppw_bulk_action_type_status)) {
+                                switch ($ppw_bulk_action_type) {
+                                    case 'enable_price_per_words':
+                                        update_post_meta($target_product_id, '_price_per_word_character', 'word');
+                                        break;
+                                    case 'enable_price_per_characters':
+                                        update_post_meta($target_product_id, '_price_per_word_character', 'character');
+                                        break;
+                                    default:
+                                        update_post_meta($target_product_id, '_price_per_word_character', 'word');
+                                        break;
+                                }
+
+                            } else {
+                                $processed_product_id[$target_product_id] = $target_product_id;
+                            }
+                        }
+                    }
+                    $update_count = count($processed_product_id);
+                }
+            }
+
+            // return
+            if (!$errors) {
+                if ($update_count == 0) {
+                    $update_count = 'zero';
+                }
+                $redirect_url = admin_url('admin.php?page=woocommerce-price-per-word-option&tab=tools&processed=' . $update_count);
+                echo $redirect_url;
+            } else {
+                //echo 'failed';
+            }
+            die(); // this is required to return a proper result
+        }
+    }
+
 }

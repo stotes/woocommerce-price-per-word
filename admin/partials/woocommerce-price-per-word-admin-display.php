@@ -41,7 +41,7 @@ class Woocommerce_Price_Per_Word_Admin_Display {
      * @access   public
      */
     public static function woocommerce_price_per_word_option() {
-        $setting_tabs = apply_filters('woocommerce_price_per_word_setting_tab', array('general' => 'General'));
+        $setting_tabs = apply_filters('woocommerce_price_per_word_setting_tab', array('general' => 'General','tools' => 'Tools'));
         $current_tab = (isset($_GET['tab'])) ? $_GET['tab'] : 'general';
         ?>
         <h2 class="nav-tab-wrapper">

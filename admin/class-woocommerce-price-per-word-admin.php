@@ -286,11 +286,17 @@ class Woocommerce_Price_Per_Word_Admin {
                         $enable_word_count_cap = $this->is_word_count_cap_enable($return_messge['product_id']);
                         if ($enable_word_count_cap) {
                             $word_count_cap_word_limit = get_post_meta($return_messge['product_id'], '_word_count_cap_word_limit', TRUE);
-                            if ($total_words > $word_count_cap_word_limit) {
-                                $return_messge = array('total_word' => '', 'message' => 'Your file contains more words than word cap limit. Maximum words limit is ' . $word_count_cap_word_limit, 'url' => '');
+                            $product_type = $this->wppw_get_product_type_by_product_id($return_messge['product_id']);
+                            if ($product_type == 'word') {
+                                $limit_of_word_or_character = $total_words;
+                            } else {
+                                $limit_of_word_or_character = $total_characters;
+                            }
+                            if ($limit_of_word_or_character > $word_count_cap_word_limit) {
+                                $return_messge = array('total_word' => '', 'message' => 'Your file contains more ' . $product_type . 's than word cap limit. Maximum ' . $product_type . 's limit is ' . $word_count_cap_word_limit, 'url' => '');
                                 $return_messge['total_word'] = $total_words;
                                 $return_messge['total_character'] = $total_characters;
-                                $return_messge['message_content'] = 'The file upload failed, Please choose a file having less words than limit one.';
+                                $return_messge['message_content'] = 'The file upload failed, Please choose a file having less ' . $product_type . 's than limit one.';
                                 @unlink($movefile['file']);
                                 echo json_encode($return_messge, true);
                                 exit();

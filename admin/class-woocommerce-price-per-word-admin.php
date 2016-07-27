@@ -203,6 +203,7 @@ class Woocommerce_Price_Per_Word_Admin {
     }
 
     public function woocommerce_get_price_html_own($price) {
+        global $product;
         $wppw_get_product_type = $this->wppw_get_product_type();
         if ($wppw_get_product_type == 'word') {
             $type = "Word";
@@ -210,7 +211,12 @@ class Woocommerce_Price_Per_Word_Admin {
             $type = "Character";
         }
         if ($this->is_enable_price_per_word()) {
-            return "Price Per $type: " . $price;
+            if (is_numeric($product->price)) {
+                $decimals = strlen(substr($product->price, strpos($product->price, ".") + 1));
+                $decimals = $decimals < wc_get_price_decimals() ? wc_get_price_decimals() : $decimals;
+                $price = wc_price($product->price, array("decimals" => $decimals));
+            }
+            return "Price Per $type: " . $price . is_float($product->price);
         } else {
             return $price;
         }
@@ -700,8 +706,13 @@ class Woocommerce_Price_Per_Word_Admin {
                 }
                 $_SESSION['breaks_price_of_product'] = $product_price;
 
+                if (is_numeric($product_final_price)) {
+                    $decimals = strlen(substr($product_final_price, strpos($product_final_price, ".") + 1));
+                    $decimals = $decimals < wc_get_price_decimals() ? wc_get_price_decimals() : $decimals;
+                }
+
                 $price_clean = array('<span class="amount">', '</span>');
-                $return_messge['product_price'] = str_replace($price_clean, '', wc_price($product_final_price));
+                $return_messge['product_price'] = str_replace($price_clean, '', wc_price($product_final_price, array("decimals" => $decimals)));
                 return $return_messge;
             }
         }
@@ -724,8 +735,13 @@ class Woocommerce_Price_Per_Word_Admin {
             $product_final_price = $price_amount;
         }
 
+        if (is_numeric($product_final_price)) {
+            $decimals = strlen(substr($product_final_price, strpos($product_final_price, ".") + 1));
+            $decimals = $decimals < wc_get_price_decimals() ? wc_get_price_decimals() : $decimals;
+        }
+
         $price_clean = array('<span class="amount">', '</span>');
-        $return_messge['product_price'] = str_replace($price_clean, '', wc_price($product_final_price));
+        $return_messge['product_price'] = str_replace($price_clean, '', wc_price($product_final_price, array("decimals" => $decimals)));
         return $return_messge;
     }
 

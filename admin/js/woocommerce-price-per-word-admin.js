@@ -320,4 +320,7 @@ jQuery(function ($) {
         return false;
     });
 
+    if(typeof $("#product-type").val() !="undefied" && $("#product-type").val() !="simple"){
+        $("#custom_tab_data_woocommerce_price_word_character_tab .price-breaks-section").hide();
+    }
 });

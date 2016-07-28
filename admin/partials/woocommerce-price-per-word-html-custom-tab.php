@@ -79,7 +79,7 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                 </div>
             </div>
 
-            <div class="options_group">
+            <div class="options_group price-breaks-section">
                 <?php
                 woocommerce_wp_checkbox(array(
                     'name' => '_is_enable_price_breaks',

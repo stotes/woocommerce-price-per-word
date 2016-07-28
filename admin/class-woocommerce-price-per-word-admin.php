@@ -216,7 +216,8 @@ class Woocommerce_Price_Per_Word_Admin {
                 $decimals = $decimals < wc_get_price_decimals() ? wc_get_price_decimals() : $decimals;
                 $price = wc_price($product->price, array("decimals" => $decimals));
             }
-            return "Price Per $type: " . $price . is_float($product->price);
+            $label = apply_filters("ppw_change_html_label_of_price", "Price Per $type:");
+            return __($label, "woocommerce-price-per-word") . " " . $price;
         } else {
             return $price;
         }

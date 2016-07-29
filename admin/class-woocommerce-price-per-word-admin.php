@@ -450,8 +450,13 @@ class Woocommerce_Price_Per_Word_Admin {
     }
 
     public function woocommerce_checkout_cart_item_quantity_own($product_name, $values, $cart_item_key) {
+        if (is_numeric($values["data"]->price)) {
+            $decimals = strlen(substr($values["data"]->price, strpos($values["data"]->price, ".") + 1));
+            $decimals = $decimals < wc_get_price_decimals() ? wc_get_price_decimals() : $decimals;
+        }
+
         if (isset($values['ppw_custom_cart_data']) && count($values['ppw_custom_cart_data']) > 0) {
-            $return_string = $product_name . "</a>";
+            $return_string = wc_price($values["data"]->price, array("decimals" => $decimals));
             if (isset($values['ppw_custom_cart_data']['file_name']) && !empty($values['ppw_custom_cart_data']['file_name'])) {
 
                 $return_string .= '<div><span><b>File Name: </b></span>';

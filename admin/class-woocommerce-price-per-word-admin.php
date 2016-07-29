@@ -245,10 +245,10 @@ class Woocommerce_Price_Per_Word_Admin {
                         if ($return_string != 'File Not exists' && $return_string != 'Invalid File Type' && !empty($return_string)) {
                             $total_words = count(str_word_count($return_string, 1));
                             $total_characters = strlen(utf8_decode($return_string));
-                            $enable_word_count_cap = $this->is_word_count_cap_enable($return_messge['product_id']);
+                            $enable_word_count_cap = $this->is_word_count_cap_enable($product_id);
                             if ($enable_word_count_cap) {
-                                $word_count_cap_word_limit = get_post_meta($return_messge['product_id'], '_word_count_cap_word_limit', TRUE);
-                                $product_type = $this->wppw_get_product_type_by_product_id($return_messge['product_id']);
+                                $word_count_cap_word_limit = get_post_meta($product_id, '_word_count_cap_word_limit', TRUE);
+                                $product_type = $this->wppw_get_product_type_by_product_id($product_id);
                                 if ($product_type == 'word') {
                                     $limit_of_word_or_character = $total_words;
                                 } else {
@@ -275,7 +275,7 @@ class Woocommerce_Price_Per_Word_Admin {
                             $_SESSION['total_words'] = $total_words;
                             $_SESSION['total_characters'] = $total_characters;
                             $_SESSION['product_price'] = $return_messge['product_price'];
-                            $_SESSION['product_id'] = $return_messge['product_id'];
+                            $_SESSION['product_id'] = $product_id;
                             $_SESSION['file_name'] = '<a href="' . esc_url($attachment_page) . '" target="_blank">' . esc_html($fileArray['basename']) . '</a>';
                             $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
 
@@ -290,10 +290,10 @@ class Woocommerce_Price_Per_Word_Admin {
                         $total_words = count(str_word_count($file_content, 1));
                         $total_characters = strlen(utf8_decode($file_content));
 
-                        $enable_word_count_cap = $this->is_word_count_cap_enable($return_messge['product_id']);
+                        $enable_word_count_cap = $this->is_word_count_cap_enable($product_id);
                         if ($enable_word_count_cap) {
-                            $word_count_cap_word_limit = get_post_meta($return_messge['product_id'], '_word_count_cap_word_limit', TRUE);
-                            $product_type = $this->wppw_get_product_type_by_product_id($return_messge['product_id']);
+                            $word_count_cap_word_limit = get_post_meta($product_id, '_word_count_cap_word_limit', TRUE);
+                            $product_type = $this->wppw_get_product_type_by_product_id($product_id);
                             if ($product_type == 'word') {
                                 $limit_of_word_or_character = $total_words;
                             } else {
@@ -319,7 +319,7 @@ class Woocommerce_Price_Per_Word_Admin {
                         $_SESSION['total_words'] = $total_words;
                         $_SESSION['total_characters'] = $total_characters;
                         $_SESSION['product_price'] = $return_messge['product_price'];
-                        $_SESSION['product_id'] = $return_messge['product_id'];
+                        $_SESSION['product_id'] = $product_id;
                         $_SESSION['file_name'] = '<a href="' . esc_url($attachment_page) . '" target="_blank">' . esc_html($fileArray['basename']) . '</a>';
                         $return_messge['message_content'] = '<a id="ppw_remove_file" data_file="' . $attach_id . '" class="button wc-forward" title="' . esc_attr__('Remove file', 'woocommerce') . '" href="#">' . "Delete" . '</a>File successfully uploaded';
                         echo json_encode($return_messge, true);

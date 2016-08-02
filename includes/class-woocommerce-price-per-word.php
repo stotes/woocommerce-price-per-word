@@ -139,7 +139,6 @@ class Woocommerce_Price_Per_Word {
             $this->loader->add_filter('woocommerce_get_price_html', $plugin_admin, 'woocommerce_get_price_html_own', 10, 1);
             $this->loader->add_action('wp_ajax_ppw_uploads', $plugin_admin, 'ppw_file_upload_action', 10);
             $this->loader->add_action('wp_ajax_nopriv_ppw_uploads', $plugin_admin, 'ppw_file_upload_action', 10);
-            //$this->loader->add_filter('upload_dir', $plugin_admin, 'woocommerce_price_per_word_upload_dir', 10, 1);
             $this->loader->add_filter('upload_mimes', $plugin_admin, 'woocommerce_price_per_word_extended_mime_types', 10, 1);
             $this->loader->add_filter('woocommerce_add_to_cart_redirect', $plugin_admin, 'woocommerce_add_to_cart_redirect_own', 10, 1);
             $this->loader->add_action('init', $plugin_admin, 'ppw_session_start', 1);

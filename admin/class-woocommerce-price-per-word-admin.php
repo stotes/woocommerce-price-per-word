@@ -57,8 +57,7 @@ class Woocommerce_Price_Per_Word_Admin {
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-admin.js', array('jquery'), $this->version, false);
         if (wp_script_is($this->plugin_name)) {
             wp_localize_script($this->plugin_name, 'woocommerce_price_per_word_params', apply_filters('woocommerce_price_per_word_params', array(
-                'woocommerce_currency_symbol_js' => '(' . get_woocommerce_currency_symbol() . ')',
-                //'aewcppw_word_character' => $this->wppw_get_product_type()
+                'woocommerce_currency_symbol_js' => '(' . get_woocommerce_currency_symbol() . ')'
             )));
         }
     }
@@ -463,7 +462,6 @@ class Woocommerce_Price_Per_Word_Admin {
                 $return_string .= "<span>" . $values['ppw_custom_cart_data']['file_name'] . "</span></div>";
             }
             $wppw_get_product_type = $this->wppw_get_product_type_by_product_id($values['product_id']);
-            //print_r($values);
             if ($wppw_get_product_type == 'word') {
                 if (isset($values['ppw_custom_cart_data']['total_words']) && !empty($values['ppw_custom_cart_data']['total_words'])) {
                     $return_string .= '<div><span><b>Total word: </b></span>';
@@ -534,7 +532,6 @@ class Woocommerce_Price_Per_Word_Admin {
     public function wppw_get_product_type() {
         global $post, $product;
         $product = wc_get_product($post);
-        //$aewcppw_word_character = get_option('aewcppw_word_character');
         $aewcppw_word_character = get_post_meta($product->id, '_price_per_word_character', TRUE);
         if (empty($aewcppw_word_character)) {
             $aewcppw_word_character = 'word';
@@ -762,14 +759,10 @@ class Woocommerce_Price_Per_Word_Admin {
         for ($price_break = 0; $price_break < count($price_breaks); $price_break++) {
             if ($total_word_or_character >= $price_breaks[$price_break]['min']) {
                 if ($price_breaks[$price_break]['max'] == '>') {
-                    return $product_price = $price_breaks[$price_break]['price']; //(($total_word_or_character - $price_breaks[$price_break]['min']) * $price_breaks[$price_break]['price']);
+                    return $product_price = $price_breaks[$price_break]['price'];
                 } else if ($total_word_or_character <= $price_breaks[$price_break]['max']) {
-                    return $product_price = $price_breaks[$price_break]['price']; // (($price_breaks[$price_break]['max'] - $price_breaks[$price_break]['min']) * $price_breaks[$price_break]['price']);
-                } else {
-                    //$price_amount = $price_amount + (($total_word_or_character - $price_breaks[$price_break]['min']) * $price_breaks[$price_break]['price']);
+                    return $product_price = $price_breaks[$price_break]['price'];
                 }
-            } else {
-                break;
             }
         }
     }
@@ -830,7 +823,7 @@ class Woocommerce_Price_Per_Word_Admin {
     }
 
     /*
-     * Action - Ajax 'bulk enable/disable tool' from offers settings/tools
+     * Action - Ajax 'bulk enable/disable tool' from Price per Words settings/tools
      * @since	0.1.0
      */
     public function adminToolBulkEnableDisablePricePerWordsCharactersCallback() {
@@ -961,8 +954,6 @@ class Woocommerce_Price_Per_Word_Admin {
                 }
                 $redirect_url = admin_url('admin.php?page=woocommerce-price-per-word-option&tab=tools&processed=' . $update_count);
                 echo $redirect_url;
-            } else {
-                //echo 'failed';
             }
             die(); // this is required to return a proper result
         }

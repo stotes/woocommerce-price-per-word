@@ -24,13 +24,11 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
          */
 
         $_price_per_word_character = get_post_meta($post->ID, '_price_per_word_character', true);
-        $field_value = $_price_per_word_character;
         $field_value = ($_price_per_word_character) ? $_price_per_word_character : 'word';
 
         /**
          * Enable Price breaks
          */
-        $_price_breaks_enabled = '';
         $post_meta_price_breaks_enabled = get_post_meta($post->ID, '_is_enable_price_breaks', true);
         $field_value_price_breaks_enabled = 'yes';
         $field_callback_price_breaks_enabled = ($post_meta_price_breaks_enabled) ? $post_meta_price_breaks_enabled : 'no';

@@ -112,7 +112,7 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                                                    value="<?php echo !empty($first_max) ? $first_max : '>'; ?>"
                                 /></td>
                             <td width="25%"><input type="number" name="price-breaks-price[]"
-                                                   value="<?php echo $first_price ?>" min="0"/></td>
+                                                   value="<?php echo $first_price ?>" step="any"/></td>
                             <td width="25%">
                                 <a href="javascript:void(0);" class="remove">Remove</a>
                             </td>
@@ -133,7 +133,7 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                                     </td>
                                     <td width="25%"><input type="number" name="price-breaks-price[]"
                                                            value="<?php echo $_price_breaks_array[$row]["price"]; ?>"
-                                                           min="0"/>
+                                                           step="any"/>
                                     </td>
                                     <td width="25%">
                                         <a href="javascript:void(0);" class="remove">Remove</a>

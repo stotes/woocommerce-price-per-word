@@ -180,6 +180,25 @@ jQuery(function ($) {
         }
     });
 
+    $(document).on("blur", "input[name='price-breaks-price[]']", function (e) {
+        var val = $(this).val();
+        var regex_to_test = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
+        var regex_to_match = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
+        if (regex_to_test.test(val)) {
+            //do something here
+
+        } else {
+            val = regex_to_match.exec(val);
+            if (val) {
+                $(this).val(val[0]);
+            } else {
+                $(this).val('');
+                $(this).focus();
+            }
+        }
+
+    });
+
     $(document).on("blur", "input[name='price-breaks-max[]']", function () {
         var $min_element = $("input[name='price-breaks-min[]']");
         var $max_element = $("input[name='price-breaks-max[]']");
@@ -281,12 +300,6 @@ jQuery(function ($) {
             $("#ppw-bulk-tool-action-type").val() === "disable_price_per_words_chacacters") {
             auto_price_per_word_or_character_enable = "_price_per_word_character_enable";
         }
-
-        /*if(  $("#ppw-bulk-tool-action-type").val() === "decline_disable" ) {
-         auto_accept_or_decline_enable = "_offers_for_woocommerce_auto_decline_enabled";
-         auto_accept_or_decline_percentage =  $("#ppw-bulk-tool-auto-decline-percentage").val();
-         }*/
-
 
         var data = {
             'action': 'adminToolBulkEnableDisablePricePerWordsCharacters',

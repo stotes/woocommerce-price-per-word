@@ -20,11 +20,10 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
         global $post, $pagenow;
 
         /**
-         * offers_for_woocommerce_enabled
+         * price_per_word_character options
          */
-
         $_price_per_word_character = get_post_meta($post->ID, '_price_per_word_character', true);
-        $field_value = ($_price_per_word_character) ? $_price_per_word_character : 'word';
+        $field_value_price_per_word_character = ($_price_per_word_character) ? $_price_per_word_character : 'word';
 
         /**
          * Enable Price breaks
@@ -44,7 +43,7 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                 <?php woocommerce_wp_radio(array(
                     'options' => array("word" => "Price per Word", "character" => "Price per Character"),
                     'name' => '_price_per_word_character',
-                    'value' => $field_value,
+                    'value' => $field_value_price_per_word_character,
                     'id' => '_price_per_word_character',
                     'label' => __('Set Price Per Word OR Price Per Character', 'woocommerce-price-per-word'),
                     'desc_tip' => 'true',
@@ -157,7 +156,6 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
 
         </div>
         <?php
-
     }
 }
 

@@ -112,7 +112,7 @@ jQuery(function ($) {
             }
             var formData = new FormData();
             formData.append("action", "ppw_uploads");
-            var fileInputElement = $(this).find("#ppw_file_upload_id")[0] ; //document.getElementById("ppw_file_upload_id");
+            var fileInputElement = $(this).find("#ppw_file_upload_id")[0];
             formData.append("file", fileInputElement.files[0]);
             formData.append("name", fileInputElement.files[0].name);
             formData.append("security", woocommerce_price_per_word_params.woocommerce_price_per_word_params_nonce);

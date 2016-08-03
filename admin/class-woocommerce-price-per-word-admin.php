@@ -264,7 +264,6 @@ class Woocommerce_Price_Per_Word_Admin {
                                 }
                             }
 
-
                             $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words, $total_characters);
                             $attachment_page = wp_get_attachment_url($attach_id);
                             $return_messge['total_word'] = $total_words;
@@ -675,7 +674,7 @@ class Woocommerce_Price_Per_Word_Admin {
     public function wppw_get_product_price($return_messge) {
         $minimum_product_price = $this->wppw_get_minimum_price($return_messge['product_id']);
 
-        // Check to Price breaks enable
+        // Check to Price breaks enable or not
         $enable_price_break = $this->is_price_breaks_enable($return_messge['product_id']);
         if ($enable_price_break) {
             $product = wc_get_product($return_messge['product_id']);
@@ -790,6 +789,12 @@ class Woocommerce_Price_Per_Word_Admin {
         }
     }
 
+    /**
+     * Check words count cap enable or not for specific proudct.
+     * @var      string $product_id product id.
+     * @return  true or false.
+     * @since    1.2.0
+     */
     public function is_word_count_cap_enable($product_id) {
         if (isset($product_id) && !empty($product_id)) {
             $enable = get_post_meta($product_id, '_word_count_cap_status', true);
@@ -803,6 +808,12 @@ class Woocommerce_Price_Per_Word_Admin {
         }
     }
 
+    /**
+     * Check price breask enable or not for specific proudct.
+     * @var      string $product_id product id.
+     * @return  true or false.
+     * @since    1.2.0
+     */
     public function is_price_breaks_enable($product_id) {
         if (isset($product_id) && !empty($product_id)) {
             $enable = get_post_meta($product_id, '_is_enable_price_breaks', true);
@@ -816,6 +827,12 @@ class Woocommerce_Price_Per_Word_Admin {
         }
     }
 
+    /**
+     * Get the price breaks data of product.
+     * @var      string $product_id product id.
+     * @return unserialize data of price breaks.
+     * @since    1.2.0
+     */
     public function get_product_price_breaks($product_id) {
         $price_breaks_serialize = get_post_meta($product_id, '_price_breaks_array', true);
         $price_breaks = maybe_unserialize($price_breaks_serialize);
@@ -824,7 +841,7 @@ class Woocommerce_Price_Per_Word_Admin {
 
     /*
      * Action - Ajax 'bulk enable/disable tool' from Price per Words settings/tools
-     * @since	0.1.0
+     * @since	1.2.0
      */
     public function adminToolBulkEnableDisablePricePerWordsCharactersCallback() {
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {

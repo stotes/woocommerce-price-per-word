@@ -158,7 +158,7 @@ class Woocommerce_Price_Per_Word {
 
             /*
              * Action - Ajax 'bulk enable/disable tool' from settings/tools
-             * @since	0.1.0
+             * @since	1.2.0
              */
             $this->loader->add_filter('wp_ajax_adminToolBulkEnableDisablePricePerWordsCharacters', $plugin_admin, 'adminToolBulkEnableDisablePricePerWordsCharactersCallback');
         } else {

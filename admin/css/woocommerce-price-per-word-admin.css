@@ -17,7 +17,11 @@
 #custom_tab_data_woocommerce_price_word_character_tab #price-breaks-list td input {
     width: 100%;
 }
-.angelleye-hidden { display: none; }
+
+.angelleye-hidden {
+    display: none;
+}
+
 /**
   Tools tab css start
 */
@@ -59,7 +63,7 @@
     float: left;
     margin-right: 6px;
     background: url('../images/spinner.gif') center center !important;
-    background-size: contain!important;
+    background-size: contain !important;
 }
 
 /**

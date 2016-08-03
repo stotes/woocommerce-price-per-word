@@ -76,9 +76,7 @@ class Woocommerce_Price_Per_Word_Public {
             } else {
                 $total_character = '';
             }
-            if ($this->is_enable_price_per_word_public()) {
 
-            }
             wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-public.js', array('jquery'), $this->version, false);
             if (wp_script_is($this->plugin_name)) {
                 wp_localize_script($this->plugin_name, 'woocommerce_price_per_word_params', apply_filters('woocommerce_price_per_word_params', array(

@@ -131,6 +131,7 @@ jQuery(function ($) {
         }
     });
 
+    // Hide the remove link for pricebreaks first row.
     $("table#price-breaks-list a.remove:first").hide();
 
     // Add button functionality
@@ -142,15 +143,14 @@ jQuery(function ($) {
         }
 
         var master = $(this).parents("table#price-breaks-list");
+
         // Get a new row based on the prototype row
         var prot = master.find(".prototype").clone();
         prot.attr("class", "")
-        //if ($("input[name='price-breaks-max[]']").size() == 1) {
         var $last_max_value = $("input[name='price-breaks-max[]']").last().parents("tr").find("input[name='price-breaks-max[]']").val();
         prot.find("input[name='price-breaks-min[]']").attr("value", parseInt($last_max_value) + 1);
         prot.find("input[name='price-breaks-max[]']").attr("value", ">");
         prot.find("a.remove").show();
-
         master.find("tbody").append(prot);
     });
 
@@ -165,10 +165,7 @@ jQuery(function ($) {
             console.log($last_max_value);
             $(this).parents("tr").next().find("input[name='price-breaks-min[]']").attr("value", parseInt($last_max_value) + 1);
             $(this).parents("tr").remove();
-
         }
-
-
     });
 
     $("#_is_enable_price_breaks").click(function () {
@@ -187,7 +184,6 @@ jQuery(function ($) {
         var regex_to_match = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
         if (regex_to_test.test(val)) {
             //do something here
-
         } else {
             val = regex_to_match.exec(val);
             if (val) {
@@ -196,7 +192,6 @@ jQuery(function ($) {
                 $(this).val($('#_regular_price').val());
             }
         }
-
     });
 
     $(document).on("blur", "input[name='price-breaks-max[]']", function () {
@@ -228,9 +223,6 @@ jQuery(function ($) {
                 alert("Note: Next all rows is reseting.");
                 $(this).parents("tr").nextAll().not(":last-child").remove();
                 $(this).parents("tr").next("tr").find($min_element).val($max + 1)
-            }
-            else if ($max < $next_min) {
-
             }
         }
     });
@@ -336,4 +328,13 @@ jQuery(function ($) {
     if (typeof $("#product-type").val() != "undefied" && $("#product-type").val() != "simple") {
         $("#custom_tab_data_woocommerce_price_word_character_tab .price-breaks-section").hide();
     }
+
+    $("#product-type").change(function () {
+        if ($(this).val() == 'simple') {
+            $("#custom_tab_data_woocommerce_price_word_character_tab .price-breaks-section").show();
+        }
+        else {
+            $("#custom_tab_data_woocommerce_price_word_character_tab .price-breaks-section").hide();
+        }
+    });
 });

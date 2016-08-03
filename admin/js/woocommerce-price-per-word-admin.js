@@ -174,6 +174,7 @@ jQuery(function ($) {
     $("#_is_enable_price_breaks").click(function () {
         if ($(this).is(":checked")) {
             $("#custom_tab_data_woocommerce_price_word_character_tab #price-breaks-list").show();
+            $("input[name='price-breaks-price[]']").val($('#_regular_price').val());
         }
         else {
             $("#custom_tab_data_woocommerce_price_word_character_tab #price-breaks-list").hide();
@@ -192,8 +193,7 @@ jQuery(function ($) {
             if (val) {
                 $(this).val(val[0]);
             } else {
-                $(this).val('');
-                $(this).focus();
+                $(this).val($('#_regular_price').val());
             }
         }
 

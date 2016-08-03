@@ -93,6 +93,9 @@ jQuery(function ($) {
         });
 
         $("input[name=ppw_file_upload]").change(function (event) {
+            if ($(this).val() == '') {
+                return false;
+            }
             $("#ppw_loader").show();
             if (!$('input[name="file_uploaded"]').length) {
                 var input = $("<input>").attr("type", "hidden").attr("name", "submit_by_ajax").val("true");

@@ -54,7 +54,7 @@ class Woocommerce_Price_Per_Word_Public {
      */
     public function enqueue_scripts() {
         global $post, $product;
-        if (is_object($post)) {
+        if (is_object($post) && class_exists('WooCommerce')) {
             $is_product_type_variable = 'false';
             if (function_exists('wc_get_product')) {
                 $product = wc_get_product($post);
@@ -113,7 +113,6 @@ class Woocommerce_Price_Per_Word_Public {
 
     public function wppw_get_product_type() {
         global $post;
-        //$aewcppw_word_character = get_option('aewcppw_word_character');
         $aewcppw_word_character = get_post_meta($post->ID, '_price_per_word_character', TRUE);
         if (empty($aewcppw_word_character)) {
             $aewcppw_word_character = 'word';

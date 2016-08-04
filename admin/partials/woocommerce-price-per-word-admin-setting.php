@@ -128,11 +128,11 @@ class Woocommerce_Price_Per_Word_Setting {
                                 <option
                                     value=""><?php echo __('- Select option', 'woocommerce-price-per-word'); ?></option>
                                 <option
-                                    value="enable_price_per_words"><?php echo __('Enable Price per Words', 'woocommerce-price-per-word'); ?></option>
+                                    value="enable_price_per_words"><?php echo __('Enable Price per Word', 'woocommerce-price-per-word'); ?></option>
                                 <option
-                                    value="enable_price_per_characters"><?php echo __('Enable Price per Characters', 'woocommerce-price-per-word'); ?></option>
+                                    value="enable_price_per_characters"><?php echo __('Enable Price per Character', 'woocommerce-price-per-word'); ?></option>
                                 <option
-                                    value="disable_price_per_words_chacacters"><?php echo __('Disable Price per Words/Characters', 'woocommerce-price-per-word'); ?></option>
+                                    value="disable_price_per_words_chacacters"><?php echo __('Disable Price per Word / Character', 'woocommerce-price-per-word'); ?></option>
                             </select>
                         </div>
                     </div>

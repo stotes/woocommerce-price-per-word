@@ -91,8 +91,8 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                     <table id="price-breaks-list" style="<?php echo $show_price_breaks ?>">
                         <thead>
                         <tr>
-                            <th class="min-title-head"><?php _e('Min Words', 'woocommerce-price-per-word'); ?></th>
-                            <th class="max-title-head"><?php _e('Max Words', 'woocommerce-price-per-word'); ?></th>
+                            <th class="min-title-head"><?php _e('Min ' . ucwords($field_value_price_per_word_character) . 's', 'woocommerce-price-per-word'); ?></th>
+                            <th class="max-title-head"><?php _e('Max ' . ucwords($field_value_price_per_word_character) . 's', 'woocommerce-price-per-word'); ?></th>
                             <th class="price-title-head"><?php _e('Price (' . get_woocommerce_currency_symbol() . ')', 'woocommerce-price-per-word'); ?></th>
                             <th></th>
                         </tr>
@@ -110,8 +110,8 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                             <td width="25%"><input type="text" name="price-breaks-max[]"
                                                    value="<?php echo !empty($first_max) ? $first_max : '>'; ?>"
                                 /></td>
-                            <td width="25%"><input type="number" name="price-breaks-price[]"
-                                                   value="<?php echo $first_price ?>" step="any"/></td>
+                            <td width="25%"><input type="text" name="price-breaks-price[]"
+                                                   value="<?php echo $first_price ?>"/></td>
                             <td width="25%">
                                 <a href="javascript:void(0);" class="remove">Remove</a>
                             </td>
@@ -130,9 +130,8 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                                                            value="<?php echo $_price_breaks_array[$row]["max"]; ?>"
                                         />
                                     </td>
-                                    <td width="25%"><input type="number" name="price-breaks-price[]"
-                                                           value="<?php echo $_price_breaks_array[$row]["price"]; ?>"
-                                                           step="any"/>
+                                    <td width="25%"><input type="text" name="price-breaks-price[]"
+                                                           value="<?php echo $_price_breaks_array[$row]["price"]; ?>"/>
                                     </td>
                                     <td width="25%">
                                         <a href="javascript:void(0);" class="remove">Remove</a>

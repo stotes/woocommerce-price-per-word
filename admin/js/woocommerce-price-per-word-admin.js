@@ -138,7 +138,13 @@ jQuery(function ($) {
     $("table#price-breaks-list a.add").click(function () {
         var $last_max_field = $("input[name='price-breaks-max[]']").last().val();
         if ($last_max_field == ">") {
-            alert("The last max field value must be greather than 0 to add more row.");
+            if ($('input[name="_price_per_word_character"][value="word"]').is(":checked")) {
+                var wppw_product_type = 'word';
+            }
+            else {
+                var wppw_product_type = 'character';
+            }
+            alert("The Max " + wppw_product_type + " field for the last row must be greater than 0 to add an additional row.");
             return false;
         }
 
@@ -180,13 +186,15 @@ jQuery(function ($) {
 
     $(document).on("blur", "input[name='price-breaks-price[]']", function (e) {
         var val = $(this).val();
-        var regex_to_test = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
-        var regex_to_match = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
+        var regex_to_test = /^([\-\+]?[0-9]*(\.[0-9]+)?)$/g;
+        var regex_to_match = /^([\-\+]?[0-9]*(\.[0-9]+)?)/g;
         if (regex_to_test.test(val)) {
-            //do something here
+            if (val == "") {
+                $(this).val($('#_regular_price').val());
+            }
         } else {
             val = regex_to_match.exec(val);
-            if (val) {
+            if (val[0] != "") {
                 $(this).val(val[0]);
             } else {
                 $(this).val($('#_regular_price').val());
@@ -195,6 +203,12 @@ jQuery(function ($) {
     });
 
     $(document).on("blur", "input[name='price-breaks-max[]']", function () {
+        if ($('input[name="_price_per_word_character"][value="word"]').is(":checked")) {
+            var wppw_product_type = 'word';
+        }
+        else {
+            var wppw_product_type = 'character';
+        }
         var $min_element = $("input[name='price-breaks-min[]']");
         var $max_element = $("input[name='price-breaks-max[]']");
         var $max = parseInt($(this).val());
@@ -205,7 +219,7 @@ jQuery(function ($) {
         }
         else if ($(this).parents("tr").next("tr").length == 0) {
             if ($max_without_parse != ">" && (isNaN($max) || $max <= $min) || $max == '') {
-                alert("The Last max field must be greather than min value.");
+                alert("The Max " + wppw_product_type + " for the last row must be greater than the Min " + wppw_product_type + ", or use the > symbol.");
                 $(this).val(">");
             }
             if ($(this).val() != '>') {
@@ -216,11 +230,11 @@ jQuery(function ($) {
             // check next tr having or not
             var $next_min = parseInt($(this).parents("tr").next("tr").find($min_element).val());
             if ($max <= $min || ($max_without_parse == '>') || isNaN($max)) {
-                alert("Max field must be greather than min value.");
+                alert("The Max " + wppw_product_type + " field must be greater than the Min " + wppw_product_type + " field.");
                 $(this).val(parseInt($(this).parents("tr").next().find($min_element).val()) - 1);
             }
             else if ($max >= $next_min || ($next_min - $max) > 1) {
-                alert("Note: Next all rows is reseting.");
+                alert("All rows will be reset to match new value.");
                 $(this).parents("tr").nextAll().not(":last-child").remove();
                 $(this).parents("tr").next("tr").find($min_element).val($max + 1)
             }

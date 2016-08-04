@@ -146,7 +146,7 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                         <tfoot>
                         <tr>
                             <td><a href="javascript:void(0);" class="add">Add row</a></td>
-                            <td colspan="3"><span style="color: #FF0000">Note: <strong>'>'</strong> sign indicate greater than minimum value.</span>
+                            <td colspan="3"><span style="color: #FF0000; font-weight:bold;">NOTE: Use a > symbol in the Max Words column to indicate that any amount larger than Min Words will be accepted.</span>
                             </td>
                         </tr>
                         </tfoot>

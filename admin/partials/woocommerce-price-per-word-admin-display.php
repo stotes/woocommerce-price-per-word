@@ -41,7 +41,7 @@ class Woocommerce_Price_Per_Word_Admin_Display {
      * @access   public
      */
     public static function woocommerce_price_per_word_option() {
-        $setting_tabs = apply_filters('woocommerce_price_per_word_setting_tab', array('general' => 'General','tools' => 'Tools'));
+        $setting_tabs = apply_filters('woocommerce_price_per_word_setting_tab', array('general' => 'General', 'tools' => 'Tools'));
         $current_tab = (isset($_GET['tab'])) ? $_GET['tab'] : 'general';
         ?>
         <h2 class="nav-tab-wrapper">
@@ -67,7 +67,7 @@ class Woocommerce_Price_Per_Word_Admin_Display {
         $is_enable_price_word_character = get_post_meta($_product->id, '_price_per_word_character_enable', TRUE);
         $class_hidden = empty($is_enable_price_word_character) ? 'custom_tab_woocommerce_price_word_character_tab_hidden' : $is_enable_price_word_character == 'no' ? 'custom_tab_woocommerce_price_word_character_tab_hidden' : '';
         print(
-            '<li id="custom_tab_woocommerce_price_word_character_tab" class="custom_tab_woocommerce_price_word_character_tab ' . $class_hidden . '"><a href="#custom_tab_data_woocommerce_price_word_character_tab">' . __('Price per Word/Character Settings', 'woocommerce-price-per-word') . '</a></li>'
+            '<li id="custom_tab_woocommerce_price_word_character_tab" class="custom_tab_woocommerce_price_word_character_tab ' . $class_hidden . '"><a href="#custom_tab_data_woocommerce_price_word_character_tab">' . __('Price Per Word/Character', 'woocommerce-price-per-word') . '</a></li>'
         );
     }
 

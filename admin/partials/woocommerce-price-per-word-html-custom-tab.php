@@ -55,15 +55,15 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                     <?php
                     woocommerce_wp_checkbox(array(
                         'id' => '_word_count_cap_status',
-                        'label' => __('Enable ' . $_price_per_word_character . ' count cap?', 'woocommerce-price-per-word'),
+                        'label' => __('Enable ' . $field_value_price_per_word_character . ' count cap?', 'woocommerce-price-per-word'),
                         'cbvalue' => 'open',
                         'value' => esc_attr($post->_word_count_cap_status),
                         'desc_tip' => 'true',
-                        'description' => __('Enable this option and then set a ' . $_price_per_word_character . ' limit to deny orders that do not meet your limit.', 'woocommerce-price-per-word')
+                        'description' => __('Enable this option and then set a ' . $field_value_price_per_word_character . ' limit to deny orders that do not meet your limit.', 'woocommerce-price-per-word')
                     ));
                     woocommerce_wp_text_input(array(
                         'id' => '_word_count_cap_word_limit',
-                        'label' => __(ucfirst($_price_per_word_character) . ' limit', 'woocommerce-price-per-word'),
+                        'label' => __(ucfirst($field_value_price_per_word_character) . ' limit', 'woocommerce-price-per-word'),
                         'desc_tip' => true,
                         'description' => __('Enter the maximum word limit to accept uploaded file words.', 'woocommerce-price-per-word'),
                         'type' => 'number',

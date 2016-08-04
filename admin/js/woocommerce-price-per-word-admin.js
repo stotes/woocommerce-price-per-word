@@ -139,10 +139,10 @@ jQuery(function ($) {
         var $last_max_field = $("input[name='price-breaks-max[]']").last().val();
         if ($last_max_field == ">") {
             if ($('input[name="_price_per_word_character"][value="word"]').is(":checked")) {
-                var wppw_product_type = 'word';
+                var wppw_product_type = 'Words';
             }
             else {
-                var wppw_product_type = 'character';
+                var wppw_product_type = 'Characters';
             }
             alert("The Max " + wppw_product_type + " field for the last row must be greater than 0 to add an additional row.");
             return false;
@@ -204,10 +204,10 @@ jQuery(function ($) {
 
     $(document).on("blur", "input[name='price-breaks-max[]']", function () {
         if ($('input[name="_price_per_word_character"][value="word"]').is(":checked")) {
-            var wppw_product_type = 'word';
+            var wppw_product_type = 'Words';
         }
         else {
-            var wppw_product_type = 'character';
+            var wppw_product_type = 'Characters';
         }
         var $min_element = $("input[name='price-breaks-min[]']");
         var $max_element = $("input[name='price-breaks-max[]']");

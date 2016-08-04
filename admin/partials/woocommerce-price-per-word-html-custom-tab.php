@@ -59,7 +59,7 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                         'cbvalue' => 'open',
                         'value' => esc_attr($post->_word_count_cap_status),
                         'desc_tip' => 'true',
-                        'description' => __('Enable to set an absolute cap on word count.', 'woocommerce')
+                        'description' => __('Enable this option and then set a ' . $_price_per_word_character . ' limit to deny orders that do not meet your limit.', 'woocommerce')
                     ));
                     woocommerce_wp_text_input(array(
                         'id' => '_word_count_cap_word_limit',

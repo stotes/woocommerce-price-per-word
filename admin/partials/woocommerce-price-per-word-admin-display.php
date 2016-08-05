@@ -66,8 +66,10 @@ class Woocommerce_Price_Per_Word_Admin_Display {
         $_product = wc_get_product($post->ID);
         $is_enable_price_word_character = get_post_meta($_product->id, '_price_per_word_character_enable', TRUE);
         $class_hidden = empty($is_enable_price_word_character) ? 'custom_tab_woocommerce_price_word_character_tab_hidden' : $is_enable_price_word_character == 'no' ? 'custom_tab_woocommerce_price_word_character_tab_hidden' : '';
+        $_price_per_word_character = get_post_meta($_product->id, '_price_per_word_character', TRUE);
+        $_price_per_word_character = ($_price_per_word_character) ? $_price_per_word_character : 'word';
         print(
-            '<li id="custom_tab_woocommerce_price_word_character_tab" class="custom_tab_woocommerce_price_word_character_tab ' . $class_hidden . '"><a href="#custom_tab_data_woocommerce_price_word_character_tab">' . __('Price Per Word/Character', 'woocommerce-price-per-word') . '</a></li>'
+            '<li id="custom_tab_woocommerce_price_word_character_tab" class="custom_tab_woocommerce_price_word_character_tab ' . $class_hidden . '"><a href="#custom_tab_data_woocommerce_price_word_character_tab">' . __('Price Per ' . ucwords($_price_per_word_character) . ' Settings', 'woocommerce-price-per-word') . '</a></li>'
         );
     }
 

@@ -219,6 +219,9 @@ jQuery(function ($) {
                     $(this).find(".single_add_to_cart_button").hide();
                 }
             }
+            else if ($(this).find(".ppw_file_upload_div").length == 0) {
+                $(this).find(".single_add_to_cart_button").parent("div").show();
+            }
         })
     });
 });

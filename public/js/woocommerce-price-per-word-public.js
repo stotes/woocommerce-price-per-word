@@ -50,6 +50,19 @@ jQuery(function ($) {
                         $(event.currentTarget).parents("form").find(".ppw_total_price").hide();
                         $(event.currentTarget).parents("form").find("#aewcppw_product_page_message").show();
                         $(event.currentTarget).parents("form").find(".ppw_file_upload_div").show();
+
+                        var select_field_name = $(event.currentTarget).attr("name");
+                        var product_variations = JSON.parse($(event.currentTarget).parents("form").attr("data-product_variations"));
+                        var display_price = 0;
+                        $.each(product_variations, function (index, value) {
+                            $.each(value.attributes, function (index, attribute) {
+                                if (attribute.toString() === $(event.currentTarget).val()) {
+                                    display_price = value.display_price;
+                                }
+                            });
+                        });
+                        var cache = $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").children();
+                        $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").text(display_price).prepend(cache);
                     }
                     else {
                         $(event.currentTarget).parents("form").find("#aewcppw_product_page_message").hide();
@@ -72,22 +85,33 @@ jQuery(function ($) {
                         var quantity = $('input[name="quantity"]').val();
                     }
                 }
+
+                var select_field_name = $(event.currentTarget).attr("name");
+                var product_variations = JSON.parse($(event.currentTarget).parents("form").attr("data-product_variations"));
+                var display_price = 0;
+                $.each(product_variations, function (index, value) {
+                    $.each(value.attributes, function (index, attribute) {
+                        if (attribute.toString() === $(event.currentTarget).val()) {
+                            display_price = value.display_price;
+                        }
+                    });
+                });
+                var cache = $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").children();
+                $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").text(display_price).prepend(cache);
+
                 setTimeout(function () {
                     $('input[name="quantity"]').val(quantity);
-                    var product_price = $(".single_variation > span.price > .amount").html().replace(/[^0-9\.]+/g, '');
+                    var product_price = $(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").html().replace(/[^0-9\.]+/g, '');
                     var total_amount = product_price * quantity;
-                    var decimals_point = 2;
-                    if (typeof (woocommerce_price_per_word_params.woocommerce_price_num_decimals) != "undefined" && woocommerce_price_per_word_params.woocommerce_price_num_decimals !== null && woocommerce_price_per_word_params.woocommerce_price_num_decimals > 0) {
-                        decimals_point = woocommerce_price_per_word_params.woocommerce_price_num_decimals;
-                    }
-                    $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + total_amount.toFixed(decimals_point));
+                    var decimals_point = product_price.split(".")[1].length;
+
+                    $(".ppw_total_amount").html(woocommerce_price_per_word_params.woocommerce_currency_symbol_js + parseFloat(total_amount.toFixed(decimals_point)));
                     if (variations_select.length > 0) {
                         $(".ppw_total_price").show();
                     } else {
                         $(".ppw_total_price").hide();
                     }
                     $(".ppw_file_upload_div").hide();
-
                 }, 2);
             }
         });

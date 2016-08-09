@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: woocommerce, price per word
 Requires at least: 3.0.1
 Tested up to: 4.5.3
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -51,6 +51,16 @@ In the search field type WooCommerce Price Per Word and click Search Plugins. On
 4. Document name displayed with link to document on cart page, order complete page, and admin order items details.
 
 == Changelog ==
+
+= 1.2.0 - 08.08.2016 =
+* Tweak - IMPORTANT UPDATE- Moved the price per word/character option to the product level. ([#37](https://github.com/angelleye/woocommerce-price-per-word/issues/37))
+* Feature - Adds a word/character count cap so a submission is rejected if it has too high a count. ([#26](https://github.com/angelleye/woocommerce-price-per-word/issues/26))
+* Feature - Adds the option to setup price breaks, so the higher the count of words/characters the cheaper the price will be. ([#27](https://github.com/angelleye/woocommerce-price-per-word/issues/27))
+* Feature - Adds shortcode functionality. ([#28](https://github.com/angelleye/woocommerce-price-per-word/issues/28))
+* Feature - Adds compatibility for 3 decimal pricing. ([#30](https://github.com/angelleye/woocommerce-price-per-word/issues/30))
+* Feature - Adds a filter hook so you can customize the "Price per Word" label. ([#32](https://github.com/angelleye/woocommerce-price-per-word/issues/32))
+* Feature - Adds a bulk edit tool for easily adjusting Price Per Word/Character options on multiple products at once. ([#38](https://github.com/angelleye/woocommerce-price-per-word/issues/38))
+
 
 = 1.1.2 - 06.26.2016 =
 * Fix - WooCommerce 2.6 Compatibility. ([#33](https://github.com/angelleye/woocommerce-price-per-word/issues/33))

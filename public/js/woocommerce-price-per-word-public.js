@@ -65,9 +65,11 @@ jQuery(function ($) {
                         $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").text(display_price).prepend(cache);
                     }
                     else {
+                        var product_variations = JSON.parse($(event.currentTarget).parents("form").attr("data-product_variations"));
+                        var cache = $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").children();
+                        $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").text(product_variations[0].display_price).prepend(cache);
                         $(event.currentTarget).parents("form").find("#aewcppw_product_page_message").hide();
                         $(event.currentTarget).parents("form").find(".ppw_file_upload_div").hide();
-
                     }
                 }, 2);
             } else {
@@ -96,6 +98,9 @@ jQuery(function ($) {
                         }
                     });
                 });
+                if (display_price == 0) {
+                    display_price = product_variations[0].display_price;
+                }
                 var cache = $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").children();
                 $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").text(display_price).prepend(cache);
 

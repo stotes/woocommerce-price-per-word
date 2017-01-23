@@ -85,6 +85,7 @@ class Woocommerce_Price_Per_Word_Public {
                     'total_word' => $total_word,
                     'total_character' => $total_character,
                     'is_product_type_variable' => $is_product_type_variable,
+                    'is_enable_price_per_word_public' => $this->is_enable_price_per_word_public(),
                     'woocommerce_currency_symbol_js' => get_woocommerce_currency_symbol(),
                     'woocommerce_price_num_decimals' => wc_get_price_decimals(),
                     'aewcppw_word_character' => $this->wppw_get_product_type(),

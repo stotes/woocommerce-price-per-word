@@ -61,7 +61,7 @@ jQuery(function ($) {
                                 }
                             });
                         });
-                        var cache = $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").children();
+                        var cache = $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").children(".woocommerce-Price-currencySymbol:first");
                         $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").text(display_price).prepend(cache);
                     }
                     else {
@@ -96,7 +96,7 @@ jQuery(function ($) {
                         }
                     });
                 });
-                var cache = $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").children();
+                var cache = $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").children(".woocommerce-Price-currencySymbol:first");
                 $(event.currentTarget).parents(".summary").find("div[itemprop='offers']").find(".woocommerce-Price-amount").text(display_price).prepend(cache);
 
                 setTimeout(function () {

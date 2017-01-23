@@ -208,9 +208,9 @@ class Woocommerce_Price_Per_Word_Admin {
             $type = "Word";
         } else {
             $type = "Character";
-        }
-        if ($this->is_enable_price_per_word()) {
-            if (is_numeric($product->price)) {
+        }        
+        if ($this->is_enable_price_per_word()) {            
+            if (is_numeric($product->price) && !is_string($price)) {
                 $decimals = strlen(substr($product->price, strpos($product->price, ".") + 1));
                 $decimals = $decimals < wc_get_price_decimals() ? wc_get_price_decimals() : $decimals;
                 $price = wc_price($product->price, array("decimals" => $decimals));

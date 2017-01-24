@@ -22,7 +22,7 @@
 }
 
 .wppw_cart .single_variation_wrap .woocommerce-variation-price {
-    display: none !important;
+    /* display: none !important; */
 }
 
 @-moz-keyframes ppw-spinner-loader {

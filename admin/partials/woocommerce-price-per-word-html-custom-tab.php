@@ -41,18 +41,43 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
 
             <div class="options_group">
                 <?php woocommerce_wp_radio(array(
-                    'options' => array("word" => "Price per Word", "character" => "Price per Character"),
+                    'options' => array("word" => "Price per Word", "character" => "Price per Character", "numwords" => "Price per Block of Words"),
                     'name' => '_price_per_word_character',
                     'value' => $field_value_price_per_word_character,
                     'id' => '_price_per_word_character',
                     'label' => __('Set Price Per Word OR Price Per Character', 'woocommerce-price-per-word'),
                     'desc_tip' => 'true',
-                    'description' => __('Choose whether to set pricing based on the number of words in a document or the number of characters', 'woocommerce-price-per-word'))); ?>
+                    'description' => __('Choose whether to set pricing based on the number of words in a document, the number of characters, or per the block of words.', 'woocommerce-price-per-word')));
+
+                $customAttr =  array(
+                    'step' => '1',
+                    'min' => '1'
+                );
+                if($_price_per_word_character=="numwords"){
+                    array_merge($customAttr,
+                        array(
+                        'disabled' => 'disabled',
+                        'hidden' => 'true')
+                    );
+                }
+
+                woocommerce_wp_text_input(array(
+                    'id' => '_num_words_block',
+                    'label' => 'Number of Words per Block',
+                    'desc_tip' => true,
+                    'description' => __('Enter the number of words per price block', 'woocommerce-price-per-word'),
+                    'type' => 'number',
+                    'custom_attributes' => $customAttr
+                ));
+                ?>
+
+
             </div>
 
             <div class="options_group word_count_cap">
                 <div class="options_group word_count_cap_status">
                     <?php
+
                     woocommerce_wp_checkbox(array(
                         'id' => '_word_count_cap_status',
                         'label' => __('Enable ' . $field_value_price_per_word_character . ' count cap?', 'woocommerce-price-per-word'),
@@ -72,6 +97,7 @@ class Woocommerce_Price_Per_Word_Html_Custom_tab {
                             'min' => '1'
                         )
                     ));
+
                     ?>
                 </div>
             </div>

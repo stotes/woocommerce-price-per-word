@@ -93,14 +93,16 @@ class Woocommerce_Price_Per_Word_Admin {
         $wppw_get_product_type = $this->wppw_get_product_type();
         if ($wppw_get_product_type == 'word') {
             $type = "Word";
+        } elseif ($wppw_get_product_type == 'numword') {
+            $type = "Number of Words";
         } else {
             $type = "Character";
         }
         $product_type_options['price_per_word_character_enable'] = array(
             'id' => '_price_per_word_character_enable',
             'wrapper_class' => '',
-            'label' => __("Enable Price Per Word/Character", 'woocommerce'),
-            'description' => __("Enable Price Per Word/Character", 'woocommerce'),
+            'label' => __("Enable Price Per Word/Character or Block of Words", 'woocommerce'),
+            'description' => __("Enable Price Per Word/Character or Block of Words", 'woocommerce'),
             'default' => 'no'
         );
         return $product_type_options;
@@ -113,12 +115,26 @@ class Woocommerce_Price_Per_Word_Admin {
                 if (isset($_POST['_price_per_word_character'])) {
                     if ($_POST['_price_per_word_character'] == "word") {
                         update_post_meta($post_id, '_price_per_word_character', "word");
+                    } elseif ($_POST['_price_per_word_character'] == "numwords") {
+                        update_post_meta($post_id, '_price_per_word_character', "numwords");
+                        /*
+                        * number of words per block value
+                        * */
+                        if (isset($_POST['_num_words_block'])) {
+                            update_post_meta($post_id, '_num_words_block', $_POST['_num_words_block']);
+                        } else {
+                            update_post_meta($post_id, '_num_words_block', "0");
+                        }
                     } else {
                         update_post_meta($post_id, '_price_per_word_character', "character");
                     }
                 } else {
                     update_post_meta($post_id, '_price_per_word_character', "word");
                 }
+
+
+
+
 
                 /*
                  * word count cap meta value
@@ -206,6 +222,9 @@ class Woocommerce_Price_Per_Word_Admin {
         $wppw_get_product_type = $this->wppw_get_product_type();
         if ($wppw_get_product_type == 'word') {
             $type = "Word";
+        } elseif ($wppw_get_product_type == 'numwords') {
+            $num_words_block = get_post_meta($product->id, '_num_words_block', TRUE);
+            $type = $num_words_block." Words";
         } else {
             $type = "Character";
         }
@@ -225,7 +244,7 @@ class Woocommerce_Price_Per_Word_Admin {
     public function ppw_file_upload_action() {
         add_filter('upload_dir', array($this, 'woocommerce_price_per_word_upload_dir'), 10, 1);
         $product_id = sanitize_text_field($_POST['product_id']);
-        $return_messge = array('total_word' => '', 'total_character' => '', 'aewcppw_word_character' => $this->wppw_get_product_type_by_product_id($product_id), 'message' => 'File successfully uploaded', 'url' => '', 'message_content' => '', 'product_price' => '', 'product_id' => $this->wppw_get_product_id());
+        $return_messge = array('total_word' => '','total_block'=>'', 'total_character' => '', 'aewcppw_word_character' => $this->wppw_get_product_type_by_product_id($product_id), 'message' => 'File successfully uploaded', 'url' => '', 'message_content' => '', 'product_price' => '', 'product_id' => $this->wppw_get_product_id());
         if (isset($_POST['security']) && !empty($_POST['security'])) {
             if (wp_verify_nonce($_POST['security'], 'woocommerce_price_per_word_params_nonce')) {
                 if (!function_exists('wp_handle_upload')) {
@@ -245,11 +264,14 @@ class Woocommerce_Price_Per_Word_Admin {
                             $total_words = count(str_word_count($return_string, 1));
                             $total_characters = strlen(utf8_decode($return_string));
                             $enable_word_count_cap = $this->is_word_count_cap_enable($product_id);
+                            $product_type = $this->wppw_get_product_type_by_product_id($product_id);
                             if ($enable_word_count_cap) {
                                 $word_count_cap_word_limit = get_post_meta($product_id, '_word_count_cap_word_limit', TRUE);
-                                $product_type = $this->wppw_get_product_type_by_product_id($product_id);
                                 if ($product_type == 'word') {
                                     $limit_of_word_or_character = $total_words;
+                                } else if ($product_type == 'numwords') {
+                                    $num_words_block = get_post_meta($product_id, '_num_words_block', TRUE);
+                                    $limit_of_word_or_character = round($total_words/$num_words_block,0);;
                                 } else {
                                     $limit_of_word_or_character = $total_characters;
                                 }
@@ -266,10 +288,16 @@ class Woocommerce_Price_Per_Word_Admin {
 
                             $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words, $total_characters);
                             $attachment_page = wp_get_attachment_url($attach_id);
+                            if ($product_type == 'numwords') {
+                                $num_words_block = get_post_meta($product_id, '_num_words_block', TRUE);
+                                $_SESSION['total_blocks']  = round($total_words/$num_words_block,0);
+                                $return_messge['total_block']  = round($total_words/$num_words_block,0);
+                            }
                             $return_messge['total_word'] = $total_words;
                             $return_messge['total_character'] = $total_characters;
                             $return_messge = $this->wppw_get_product_price($return_messge);
                             $_SESSION['attach_id'] = $attach_id;
+
                             $_SESSION['total_words'] = $total_words;
                             $_SESSION['total_characters'] = $total_characters;
                             $_SESSION['product_price'] = $return_messge['product_price'];
@@ -287,14 +315,16 @@ class Woocommerce_Price_Per_Word_Admin {
                         $file_content = file_get_contents($movefile['file']);
                         $total_words = count(str_word_count($file_content, 1));
                         $total_characters = strlen(utf8_decode($file_content));
-
+                        $product_type = $this->wppw_get_product_type_by_product_id($product_id);
                         $enable_word_count_cap = $this->is_word_count_cap_enable($product_id);
                         if ($enable_word_count_cap) {
                             $word_count_cap_word_limit = get_post_meta($product_id, '_word_count_cap_word_limit', TRUE);
                             $product_type = $this->wppw_get_product_type_by_product_id($product_id);
                             if ($product_type == 'word') {
                                 $limit_of_word_or_character = $total_words;
-                            } else {
+                            } elseif ($product_type == 'numwords') {
+                                $limit_of_word_or_character = $total_words;
+                            } else  {
                                 $limit_of_word_or_character = $total_characters;
                             }
                             if ($limit_of_word_or_character > $word_count_cap_word_limit) {
@@ -310,6 +340,11 @@ class Woocommerce_Price_Per_Word_Admin {
 
                         $attach_id = $this->ppw_upload_file_to_media($movefile['file'], $total_words, $total_characters);
                         $attachment_page = wp_get_attachment_url($attach_id);
+                        if ($product_type == 'numwords') {
+                            $num_words_block = get_post_meta($product_id, '_num_words_block', TRUE);
+                            $_SESSION['total_blocks']  = round($total_words/$num_words_block,0);
+                            $return_messge['total_block']  = round($total_words/$num_words_block,0);
+                        }
                         $return_messge['total_word'] = $total_words;
                         $return_messge['total_character'] = $total_characters;
                         $return_messge = $this->wppw_get_product_price($return_messge);
@@ -377,6 +412,7 @@ class Woocommerce_Price_Per_Word_Admin {
         $attach_data = wp_generate_attachment_metadata($attach_id, $filename);
         wp_update_attachment_metadata($attach_id, $attach_data);
         update_post_meta($attach_id, 'total_word', $count_word);
+        update_post_meta($attach_id, 'total_blocks', $count_word);
         update_post_meta($attach_id, 'total_character', $total_characters);
         return $attach_id;
     }
@@ -396,6 +432,7 @@ class Woocommerce_Price_Per_Word_Admin {
                     unset($_SESSION['attachment_anchor_tag_url']);
                     unset($_SESSION['attach_id']);
                     unset($_SESSION['total_words']);
+                    unset($_SESSION['total_blocks']);
                     unset($_SESSION['total_characters']);
                     unset($_SESSION['file_name']);
                     echo json_encode($return_messge, true);
@@ -415,6 +452,10 @@ class Woocommerce_Price_Per_Word_Admin {
         if (isset($_SESSION['total_words']) && !empty($_SESSION['total_words'])) {
             $custom_cart_data['total_words'] = $_SESSION['total_words'];
             unset($_SESSION['total_words']);
+        }
+        if (isset($_SESSION['total_blocks']) && !empty($_SESSION['total_blocks'])) {
+            $custom_cart_data['total_blocks'] = $_SESSION['total_blocks'];
+            unset($_SESSION['total_blocks']);
         }
         if (isset($_SESSION['total_characters']) && !empty($_SESSION['total_characters'])) {
             $custom_cart_data['total_characters'] = $_SESSION['total_characters'];
@@ -452,19 +493,30 @@ class Woocommerce_Price_Per_Word_Admin {
             $decimals = strlen(substr($values["data"]->price, strpos($values["data"]->price, ".") + 1));
             $decimals = $decimals < wc_get_price_decimals() ? wc_get_price_decimals() : $decimals;
         }
-
         if (isset($values['ppw_custom_cart_data']) && count($values['ppw_custom_cart_data']) > 0) {
+            $wppw_get_product_type = $this->wppw_get_product_type_by_product_id($values['product_id']);
             $return_string = wc_price($values["data"]->price, array("decimals" => $decimals));
-            if (isset($values['ppw_custom_cart_data']['file_name']) && !empty($values['ppw_custom_cart_data']['file_name'])) {
 
+            if ($wppw_get_product_type == 'numwords') {
+                $num_words_block = get_post_meta($values['product_id'], '_num_words_block', TRUE);
+                $return_string .= " per ".$num_words_block. ' words';
+            }
+            if (isset($values['ppw_custom_cart_data']['file_name']) && !empty($values['ppw_custom_cart_data']['file_name'])) {
                 $return_string .= '<div><span><b>File Name: </b></span>';
                 $return_string .= "<span>" . $values['ppw_custom_cart_data']['file_name'] . "</span></div>";
             }
-            $wppw_get_product_type = $this->wppw_get_product_type_by_product_id($values['product_id']);
+
             if ($wppw_get_product_type == 'word') {
                 if (isset($values['ppw_custom_cart_data']['total_words']) && !empty($values['ppw_custom_cart_data']['total_words'])) {
                     $return_string .= '<div><span><b>Total word: </b></span>';
                     $return_string .= "<span>" . $values['ppw_custom_cart_data']['total_words'] . "</span></div>";
+                }
+            } elseif ($wppw_get_product_type == 'numwords') {
+                if (isset($values['ppw_custom_cart_data']['total_words']) && !empty($values['ppw_custom_cart_data']['total_blocks'])) {
+                    $return_string .= '<div><span><b>Total number of words: </b></span>';
+                    $return_string .= "<span>" . $values['ppw_custom_cart_data']['total_words'] . "</span></div>";
+                    $return_string .= '<div><span><b>Total blocks of '.$num_words_block.' words: </b></span>';
+                    $return_string .= "<span>" . $values['ppw_custom_cart_data']['total_blocks'] . "</span></div>";
                 }
             } else {
                 if (isset($values['ppw_custom_cart_data']['total_characters']) && !empty($values['ppw_custom_cart_data']['total_characters'])) {
@@ -536,6 +588,8 @@ class Woocommerce_Price_Per_Word_Admin {
             $aewcppw_word_character = 'word';
         } elseif ($aewcppw_word_character == 'word') {
             $aewcppw_word_character = 'word';
+        } elseif ($aewcppw_word_character == 'numwords') {
+            $aewcppw_word_character = 'numwords';
         } elseif ($aewcppw_word_character == 'character') {
             $aewcppw_word_character = 'character';
         } else {
@@ -550,6 +604,8 @@ class Woocommerce_Price_Per_Word_Admin {
             $aewcppw_word_character = 'word';
         } elseif ($aewcppw_word_character == 'word') {
             $aewcppw_word_character = 'word';
+        } elseif ($aewcppw_word_character == 'numwords') {
+            $aewcppw_word_character = 'numwords';
         } elseif ($aewcppw_word_character == 'character') {
             $aewcppw_word_character = 'character';
         } else {
@@ -682,6 +738,8 @@ class Woocommerce_Price_Per_Word_Admin {
 
                 if ($return_messge['aewcppw_word_character'] == 'word') {
                     $total_word_or_character = $return_messge['total_word'];
+                } elseif ($return_messge['aewcppw_word_character'] == 'numwords') {
+                    $total_word_or_character = $return_messge['total_block'];
                 } else {
                     $total_word_or_character = $return_messge['total_character'];
                 }
@@ -697,6 +755,8 @@ class Woocommerce_Price_Per_Word_Admin {
                 }
                 if ($return_messge['aewcppw_word_character'] == 'word') {
                     $price_amount = $product_price * $return_messge['total_word'];
+                } else if ($return_messge['aewcppw_word_character'] == 'numwords') {
+                    $price_amount = $product_price * $return_messge['total_block'];
                 } else {
                     $price_amount = $product_price * $return_messge['total_character'];
                 }
@@ -728,6 +788,8 @@ class Woocommerce_Price_Per_Word_Admin {
         }
         if ($return_messge['aewcppw_word_character'] == 'word') {
             $price_amount = $product_price * $return_messge['total_word'];
+        } else if ($return_messge['aewcppw_word_character'] == 'numwords') {
+            $price_amount = $product_price * $return_messge['total_block'];
         } else {
             $price_amount = $product_price * $return_messge['total_character'];
         }
@@ -737,10 +799,10 @@ class Woocommerce_Price_Per_Word_Admin {
             $product_final_price = $price_amount;
         }
 
-        if (is_numeric($product_final_price)) {
-            $decimals = strlen(substr($product_final_price, strpos($product_final_price, ".") + 1));
-            $decimals = $decimals < wc_get_price_decimals() ? wc_get_price_decimals() : $decimals;
-        }
+//        if (is_numeric($product_final_price)) {
+//            $decimals = strlen(substr($product_final_price, strpos($product_final_price, ".")));
+//            $decimals = $decimals < wc_get_price_decimals() ? wc_get_price_decimals() : $decimals;
+//        }
 
         $price_clean = array('<span class="amount">', '</span>');
         $return_messge['product_price'] = str_replace($price_clean, '', wc_price($product_final_price, array("decimals" => $decimals)));
@@ -752,6 +814,8 @@ class Woocommerce_Price_Per_Word_Admin {
         $wppw_get_product_type = $this->wppw_get_product_type_by_product_id($product_id);
         if ($wppw_get_product_type == 'word') {
             $total_word_or_character = $return_data['total_word'];
+        } elseif ($wppw_get_product_type == 'numwords') {
+            $total_word_or_character = $return_data['total_block'];
         } else {
             $total_word_or_character = $return_data['total_character'];
         }
@@ -949,6 +1013,9 @@ class Woocommerce_Price_Per_Word_Admin {
                                         break;
                                     case 'enable_price_per_characters':
                                         update_post_meta($target_product_id, '_price_per_word_character', 'character');
+                                        break;
+                                    case 'enable_price_per_numwords':
+                                        update_post_meta($target_product_id, 'enable_price_per_numwords', 'numwords');
                                         break;
                                     default:
                                         update_post_meta($target_product_id, '_price_per_word_character', 'word');

@@ -4,6 +4,8 @@ jQuery(function ($) {
 
         if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'word') {
             var wppw_product_type = 'Word ';
+        }else if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'numwords') {
+            var wppw_product_type = 'Block of Words ';
         } else if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'character') {
             var wppw_product_type = 'Character ';
         } else {
@@ -13,8 +15,9 @@ jQuery(function ($) {
         $('#_price_per_word_character_enable').change(function () {
             if ($('input[name="_price_per_word_character"][value="word"]').is(":checked")) {
                 var wppw_product_type = 'Word ';
-            }
-            else {
+            } else if ($('input[name="_price_per_word_character"][value="numwords"]').is(":checked")) {
+                var wppw_product_type = 'Block of Words ';
+            } else {
                 var wppw_product_type = 'Character ';
             }
             if ($(this).is(':checked')) {
@@ -43,6 +46,19 @@ jQuery(function ($) {
                 $("label[for='_word_count_cap_word_limit']").text(wppw_product_type + 'limit');
                 $("#price-breaks-list .min-title-head").text("Min Words");
                 $("#price-breaks-list .max-title-head").text("Max Words");
+                $("#_is_enable_price_breaks").removeAttr('disabled');
+                $("#_num_words_block").attr('disabled','disabled');
+                $("#_num_words_block").attr('hidden','hidden');
+                $("#custom_tab_woocommerce_price_word_character_tab a").html("Price Per " + wppw_product_type + " Settings");
+            } else if ($(this).val() == 'numwords') {
+                var wppw_product_type = 'Block of Words ';
+                $("label[for='_regular_price']").text('Price Per ' + wppw_product_type + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
+                $(".variable_pricing p.form-row-first label").text('Price Per ' + wppw_product_type + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);
+                $("label[for='_word_count_cap_status']").text('Enable word count cap?');
+                $("label[for='_word_count_cap_word_limit']").text('Words limit');
+                $("#_is_enable_price_breaks").attr('disabled','disabled');
+                $("#_num_words_block").removeAttr('disabled');
+                $("#_num_words_block").removeAttr('hidden');
                 $("#custom_tab_woocommerce_price_word_character_tab a").html("Price Per " + wppw_product_type + " Settings");
             } else if ($(this).val() == 'character') {
                 var wppw_product_type = 'Character ';
@@ -52,6 +68,8 @@ jQuery(function ($) {
                 $("label[for='_word_count_cap_word_limit']").text(wppw_product_type + 'limit');
                 $("#price-breaks-list .min-title-head").text("Min Characters");
                 $("#price-breaks-list .max-title-head").text("Max Characters");
+                $("#_num_words_block").attr('disabled','disabled');
+                $("#_num_words_block").attr('hidden','hidden');
                 $("#custom_tab_woocommerce_price_word_character_tab a").html("Price Per " + wppw_product_type + " Settings");
             }
             else {
@@ -112,7 +130,9 @@ jQuery(function ($) {
                 if ($('input[name="_price_per_word_character"][value="word"]').is(":checked")) {
                     var wppw_product_type = 'Word ';
                 }
-                else {
+                else if ($('input[name="_price_per_word_character"][value="numwords"]').is(":checked")) {
+                    var wppw_product_type = 'Block of Words ';
+                } else {
                     var wppw_product_type = 'Character ';
                 }
                 $("label[for='_regular_price']").text('Price Per ' + wppw_product_type + woocommerce_price_per_word_params.woocommerce_currency_symbol_js);

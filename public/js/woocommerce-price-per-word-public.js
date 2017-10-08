@@ -15,7 +15,28 @@ jQuery(function ($) {
                     $(".single_add_to_cart_button").parent('div').hide();
                 }
             }
-        } else {
+
+        }
+
+        //Block of Words
+        else if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'numwords') {
+            if (typeof (woocommerce_price_per_word_params.total_block) != "undefined" && woocommerce_price_per_word_params.total_block !== null && woocommerce_price_per_word_params.total_block > 0) {
+
+                //check against the block of words vs total number of words
+                $(".woocommerce .quantity input[name='quantity']").val(woocommerce_price_per_word_params.total_block);
+                $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
+                $(".single_variation_wrap").show();
+                $(".single_add_to_cart_button").parent('div').show();
+            } else {
+                if (typeof (woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty) != "undefined" && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty !== null && woocommerce_price_per_word_params.aewcppw_allow_users_to_enter_qty == 'no') {
+                    $(".single_variation_wrap").hide();
+                    $(".single_add_to_cart_button").parent('div').hide();
+                }
+            }
+        }
+
+
+        else {
             if (typeof (woocommerce_price_per_word_params.total_character) != "undefined" && woocommerce_price_per_word_params.total_character !== null && woocommerce_price_per_word_params.total_character > 0) {
                 $(".woocommerce .quantity input[name='quantity']").val(woocommerce_price_per_word_params.total_character);
                 $(".woocommerce .quantity input[name='quantity']").prop("readonly", true);
@@ -59,19 +80,47 @@ jQuery(function ($) {
                 }, 2);
             } else {
                 var variations_select = $(".woocommerce div.product form.cart .variations select option:selected").attr("value");
-                if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'word') {
-                    if (typeof (woocommerce_price_per_word_params.total_word) != "undefined" && woocommerce_price_per_word_params.total_word !== null && woocommerce_price_per_word_params.total_word > 0) {
-                        var quantity = woocommerce_price_per_word_params.total_word;
-                    } else {
-                        var quantity = $('input[name="quantity"]').val();
-                    }
-                } else {
-                    if (typeof (woocommerce_price_per_word_params.total_character) != "undefined" && woocommerce_price_per_word_params.total_character !== null && woocommerce_price_per_word_params.total_character > 0) {
-                        var quantity = woocommerce_price_per_word_params.total_character;
-                    } else {
-                        var quantity = $('input[name="quantity"]').val();
-                    }
+
+                switch (woocommerce_price_per_word_params.aewcppw_word_character){
+
+                    case "word":
+                        if (typeof (woocommerce_price_per_word_params.total_word) != "undefined" && woocommerce_price_per_word_params.total_word !== null && woocommerce_price_per_word_params.total_word > 0) {
+                            var quantity = woocommerce_price_per_word_params.total_word;
+                        } else {
+                            var quantity = $('input[name="quantity"]').val();
+                        }
+                        break;
+
+                    case "numwords":
+                        if (typeof (woocommerce_price_per_word_params.total_block) != "undefined" && woocommerce_price_per_word_params.total_block !== null && woocommerce_price_per_word_params.total_block > 0) {
+                            var quantity = woocommerce_price_per_word_params.total_block;
+                        } else {
+                            var quantity = $('input[name="quantity"]').val();
+                        }
+                        break;
+
+                    case "character":
+                        if (typeof (woocommerce_price_per_word_params.total_character) != "undefined" && woocommerce_price_per_word_params.total_character !== null && woocommerce_price_per_word_params.total_character > 0) {
+                            var quantity = woocommerce_price_per_word_params.total_character;
+                        } else {
+                            var quantity = $('input[name="quantity"]').val();
+                        }
+                        break
+
+                    default:
+
+                        break;
+
                 }
+
+                if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'word') {
+
+                } else  if (typeof (woocommerce_price_per_word_params.aewcppw_word_character) != "undefined" && woocommerce_price_per_word_params.aewcppw_word_character !== null && woocommerce_price_per_word_params.aewcppw_word_character == 'numwords') {
+
+                } else {
+
+                }
+
                 setTimeout(function () {
                     $('input[name="quantity"]').val(quantity);
                     var product_price = $(".single_variation > span.price > .amount").html().replace(/[^0-9\.]+/g, '');
@@ -113,13 +162,14 @@ jQuery(function ($) {
             } else {
                 return true;
             }
+            var product_id = $("input[name='add-to-cart']").val();
             var formData = new FormData();
             formData.append("action", "ppw_uploads");
             var fileInputElement = $(this).find("#ppw_file_upload_id")[0];
             formData.append("file", fileInputElement.files[0]);
             formData.append("name", fileInputElement.files[0].name);
             formData.append("security", woocommerce_price_per_word_params.woocommerce_price_per_word_params_nonce);
-            formData.append("product_id", $("input[name='add-to-cart']").val());
+            formData.append("product_id", $("button[name='add-to-cart']").val());
             formData.append("variation_id", $("input[name='variation_id']").val());
             $.ajax({
                 url: woocommerce_price_per_word_params.ajax_url,
@@ -142,6 +192,8 @@ jQuery(function ($) {
 
                         if (typeof (obj.aewcppw_word_character) != "undefined" && obj.aewcppw_word_character !== null && obj.aewcppw_word_character == 'word') {
                             $(".woocommerce .quantity input[name='quantity']").val(obj.total_word);
+                        } else if (obj.aewcppw_word_character == 'numwords') {
+                            $(".woocommerce .quantity input[name='quantity']").val(obj.total_block);
                         } else {
                             $(".woocommerce .quantity input[name='quantity']").val(obj.total_character);
                         }

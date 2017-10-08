@@ -68,15 +68,13 @@ class Woocommerce_Price_Per_Word_Public {
             $attach_id = (isset($_SESSION['attach_id']) && !empty($_SESSION['attach_id'])) ? $_SESSION['attach_id'] : '';
             if (!empty($attach_id)) {
                 $total_word = get_post_meta($attach_id, 'total_word', true);
-            } else {
-                $total_word = '';
-            }
-            if (!empty($attach_id)) {
+                $total_block = get_post_meta($attach_id, 'total_block', true);
                 $total_character = get_post_meta($attach_id, 'total_character', true);
             } else {
+                $total_word = '';
+                $total_block = '';
                 $total_character = '';
             }
-
             wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/woocommerce-price-per-word-public.js', array('jquery'), $this->version, false);
             if (wp_script_is($this->plugin_name)) {
                 wp_localize_script($this->plugin_name, 'woocommerce_price_per_word_params', apply_filters('woocommerce_price_per_word_params', array(
@@ -84,6 +82,7 @@ class Woocommerce_Price_Per_Word_Public {
                     'woocommerce_price_per_word_params_nonce' => wp_create_nonce("woocommerce_price_per_word_params_nonce"),
                     'total_word' => $total_word,
                     'total_character' => $total_character,
+                    'total_block' => $total_block,
                     'is_product_type_variable' => $is_product_type_variable,
                     'woocommerce_currency_symbol_js' => get_woocommerce_currency_symbol(),
                     'woocommerce_price_num_decimals' => wc_get_price_decimals(),
@@ -116,6 +115,8 @@ class Woocommerce_Price_Per_Word_Public {
             $aewcppw_word_character = 'word';
         } elseif ($aewcppw_word_character == 'word') {
             $aewcppw_word_character = 'word';
+        } elseif ($aewcppw_word_character == 'numwords') {
+            $aewcppw_word_character = 'numwords';
         } elseif ($aewcppw_word_character == 'character') {
             $aewcppw_word_character = 'character';
         } else {
